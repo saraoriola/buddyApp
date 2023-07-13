@@ -1,0 +1,15 @@
+const User = require("../models/User");
+
+const UserController ={
+    
+    async create(req,res){
+        try {
+            const user = await User.create(req.body)
+            res.status(201).send({ message: 'Usuario creado con éxito', user})
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'Ha habido un problema al crear el usuario' })
+        }
+    },
+}
+module.exports = UserController;
