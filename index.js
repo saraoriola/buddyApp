@@ -15,6 +15,5 @@ dbConnection();
 // Middleware to parse JSON in the request body
 app.use(express.json());
 
-
 // Start the server on the specified port
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
