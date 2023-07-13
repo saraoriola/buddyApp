@@ -4,6 +4,7 @@ const UserSchema = new mongoose.Schema({
     name: String,
     lastName: String,
     email: String,
+    password: String,
     role: String, //student
     punctuation: Number
 }, { timestamps: true });
