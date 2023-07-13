@@ -5,3 +5,5 @@ npm i express mongoose
 npm i -D nodemon
 
 npm i bcryptjs 
+npm install jsonwebtoken
+

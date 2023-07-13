@@ -1,7 +1,7 @@
 // Import necessary functions
-const { hashSync } = require("bcrypt");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
 
 // Define the user controller
 const UserController = {
@@ -35,6 +35,38 @@ const UserController = {
         res.status(500).json({ message: 'Error registering the user' });
       }
     },
+
+    // Method to login a user
+    async loginUser (req, res){
+        const { email, password } = req.body;
+      
+        try {
+          // Buscar el usuario por correo electrónico en la base de datos
+          const user = await User.findOne({ email });
+      
+          // Verificar si el usuario existe
+          if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+          }
+      
+          // Comparar la contraseña proporcionada con la contraseña almacenada
+          const isMatch = await bcrypt.compare(password, user.password);
+      
+          // Verificar si las contraseñas coinciden
+          if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+          }
+      
+          // Generar un token JWT para autenticación
+          const token = jwt.sign({ userId: user._id }, 'secretKey', { expiresIn: '1h' });
+      
+          // Enviar una respuesta exitosa con el token de autenticación
+          res.status(200).json({ message: 'Login successful', token });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Error during login' });
+        }
+    }
   };
   
 // Export the user controller
