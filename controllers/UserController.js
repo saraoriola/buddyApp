@@ -13,6 +13,12 @@ const UserController = {
       if (!name || !lastName || !email || !password || !role) {
         return res.status(400).json({ message: "All fields are required" });
       }
+
+      // Validación del dominio de correo electrónico
+      const emailDomain = email.split("@")[1];
+      if (emailDomain !== "edem.es") {
+        return res.status(400).json({ message: "Only EDEM email addresses are allowed" });
+      }
     
       try {
         // Check if the user already exists
