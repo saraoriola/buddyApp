@@ -105,6 +105,34 @@ const UserController = {
         console.error(error);
         res.status(500).json({ message: 'Error during logout' });
       }
+    },
+
+    // Método para dar puntos a un usuario (solo para profesores)
+    async givePoints(req, res) {
+      try {
+        const { userId } = req.params;
+        const { points } = req.body;
+
+        // Verificar si el usuario existe
+        const user = await User.findByPk(userId);
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Verificar si el usuario tiene el rol de profesor
+        if (user.role !== 'profesor') {
+          return res.status(403).json({ message: 'Only professors can give points' });
+        }
+
+        // Agregar los puntos al usuario
+        user.punctuation += points;
+        await user.save();
+
+        res.json({ message: 'Points added successfully', user });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error adding points' });
+      }
     }
     
   };

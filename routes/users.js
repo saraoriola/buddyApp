@@ -5,7 +5,7 @@ const router = express.Router()
 const UserController = require('../controllers/UserController');
 
 // Import the authMiddleware
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
 
 
 
@@ -20,6 +20,7 @@ router.post('/logout', authMiddleware, UserController.logoutUser);
 router.get('/', authMiddleware, UserController.getCurrentUser);
 
 //UPDATE
+router.put('/users/:userId/points', authMiddleware, isAdmin, UserController.givePoints);
 
 //DELETE
 

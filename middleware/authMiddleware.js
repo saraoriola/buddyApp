@@ -6,7 +6,7 @@ const { Token } = require('../models/token');
 const jwt = require('jsonwebtoken');
 
 // Importing JWT secret from config
-const { jwt_secret } = require('../config/config.json')['development'];
+const { secretKey } = require('../config/config.json')['development'];
 
 // Middleware for authentication
 const authMiddleware = async (req, res, next) => {
@@ -15,8 +15,8 @@ const authMiddleware = async (req, res, next) => {
     const token = req.headers.authorization;
 
     // Verifying the token
-    const payload = jwt.verify(token, jwt_secret);
-
+    const payload = jwt.verify(token, secretKey);
+    
     // Finding user based on the payload ID
     const user = await User.findByPk(payload.id);
     console.log(user);
