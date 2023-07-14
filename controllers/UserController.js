@@ -1,5 +1,5 @@
 // Import necessary functions
-const User = require("../models/User");
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 
@@ -66,7 +66,21 @@ const UserController = {
           console.error(error);
           res.status(500).json({ message: 'Error during login' });
         }
+    },
+
+    async getCurrentUser(req, res) {
+      try {
+        // Obtener la información del usuario autenticado desde el objeto `req.user` gracias al middleware de autenticación
+        const user = req.user;
+    
+        // Devolver la información del usuario
+        res.json({ user });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving user information' });
+      }
     }
+    
   };
   
 // Export the user controller
