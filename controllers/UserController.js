@@ -79,6 +79,22 @@ const UserController = {
         console.error(error);
         res.status(500).json({ message: 'Error retrieving user information' });
       }
+    },
+
+    async logoutUser(req, res) {
+      try {
+        // Obtén el token de autorización del encabezado de la solicitud
+        const token = req.headers.authorization;
+    
+        // Elimina el token de la base de datos
+        await Token.destroy({ where: { token } });
+    
+        // Envía una respuesta exitosa
+        res.status(200).json({ message: 'Logout successful' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error during logout' });
+      }
     }
     
   };

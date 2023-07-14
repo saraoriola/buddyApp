@@ -13,10 +13,11 @@ const { authMiddleware } = require('../middleware/authMiddleware');
 // CREATE
 router.post('/',UserController.registerUser)
 router.post('/login', UserController.loginUser);
+router.post('/logout', authMiddleware, UserController.logoutUser);
+
 
 //READ
 router.get('/', authMiddleware, UserController.getCurrentUser);
-
 
 //UPDATE
 
