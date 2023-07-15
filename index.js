@@ -1,5 +1,5 @@
 // Import the "express" module
-const express = require("express");
+const express = require('express');
 // Create an instance of the Express application
 const app = express();
 // Define the port number on which the server will run
@@ -13,8 +13,8 @@ app.use(express.json());
 // Establish the connection with the database
 dbConnection();
 
-//Importamos ruta users
 app.use("/users", require("./routes/users"))
+app.use('/doubts', require('./routes/doubts'));
 
 // Start the server on the specified port
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
