@@ -28,7 +28,7 @@ const UserController = {
         }
     
         // Generate the hashed password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hashSync(password, 10);
     
         // Create the user
         const user = await User.create({
@@ -60,7 +60,7 @@ const UserController = {
           }
       
           // Comparar la contraseña proporcionada con la contraseña almacenada
-          const isMatch = await bcrypt.compare(password, user.password);
+          const isMatch = await bcrypt.compareSync(password, user.password);
       
           // Verificar si las contraseñas coinciden
           if (!isMatch) {
