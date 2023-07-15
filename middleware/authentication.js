@@ -5,14 +5,24 @@ const { jwt_secret } = require('../config/config.json')['development'];
 
 const authentication = async (req, res, next) => {
   try {
-    const token = req.headers.authorization;
+    const token = req.headers.authentication;
     const payload = jwt.verify(token, jwt_secret);
-    const user = await Token.findOne();
-  } catch (error) {}
+    const user = await User.findOne({ _id: payload._id, tokens: { $in: [token] } });
+
+    if (!user) {
+      return res.status(401).send({ message: 'No estás autorizado' });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ error, message: 'Ha habido un problema con el token' });
+  }
 };
 
 const isAdmin = async (req, res, next) => {
-  const admins = ['admin', 'superadmin'];
+  const admins = ['teacher', 'teacherAssistant'];
   if (!admins.includes(req.user.role)) {
     return res.status(403).send({
       message: 'You do not have permissions',

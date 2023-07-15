@@ -7,8 +7,6 @@ const UserController = require('../controllers/UserController');
 // Import the authentication
 const { authentication } = require('../middleware/authentication');
 
-
-
 // Routes for users
 // CREATE
 router.post('/',UserController.registerUser)
