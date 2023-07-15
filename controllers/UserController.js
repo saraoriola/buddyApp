@@ -105,7 +105,7 @@ const UserController = {
   async logoutUser(req, res) {
     try {
       // Obtén el token de autorización del encabezado de la solicitud
-      const token = req.headers.authorization;
+      const token = req.headers.authentication;
 
       // Elimina el token de la base de datos (aquí asumo que estás usando una base de datos para almacenar los tokens de sesión)
       await Token.destroy({ where: { token } });

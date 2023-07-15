@@ -2,9 +2,9 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys');
 
-const authorization = async (req, res, next) => {
+const authentication = async (req, res, next) => {
   try {
-    const token = req.headers.authorization;
+    const token = req.headers.authentication;
     const payload = jwt.verify(token, jwt_secret);
     const user = await User.findOne({ _id: payload._id, tokens: { $in: [token] } });
 
@@ -20,4 +20,4 @@ const authorization = async (req, res, next) => {
   }
 };
 
-module.exports = { authorization };
+module.exports = { authentication };
