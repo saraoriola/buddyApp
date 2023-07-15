@@ -2,6 +2,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const { jwt_secret } = require("../config/config.json")
 
 // Define the user controller
 const UserController = {
@@ -68,7 +69,7 @@ const UserController = {
           }
       
           // Generar un token JWT para autenticación
-          const token = jwt.sign({ userId: user._id }, 'secretKey', { expiresIn: '1h' });
+          const token = jwt.sign({ userId: user._id }, jwt_secret, { expiresIn: '1h' });
       
           // Enviar una respuesta exitosa con el token de autenticación
           res.status(200).json({ message: 'Login successful', token });
