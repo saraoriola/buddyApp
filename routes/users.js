@@ -4,8 +4,8 @@ const router = express.Router()
 // Import the user controller
 const UserController = require('../controllers/UserController');
 
-// Import the authMiddleware
-const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
+// Import the authorization
+const { authorization } = require('../middleware/authorization');
 
 
 
@@ -13,15 +13,14 @@ const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
 // CREATE
 router.post('/',UserController.registerUser)
 router.post('/login', UserController.loginUser);
-router.post('/logout', authMiddleware, UserController.logoutUser);
-
 
 //READ
-router.get('/', authMiddleware, UserController.getCurrentUser);
+router.get('/', authorization, UserController.getCurrentUser);
 
 //UPDATE
-router.put('/users/:userId/points', authMiddleware, isAdmin, UserController.givePoints);
+router.put('/users/:_id/points', authorization, UserController.givePoints);
 
 //DELETE
+router.delete('/logout', authorization, UserController.logoutUser);
 
 module.exports = router;

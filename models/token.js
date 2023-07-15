@@ -1,10 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const TokenSchema = new mongoose.Schema({
-  token: String,
-  userId: mongoose.Schema.Types.ObjectId
+// Definimos el esquema del modelo Token
+const tokenSchema = new mongoose.Schema({
+  token: {
+    type: String,
+    required: true,
+  },
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
-const Token = mongoose.model('Token', TokenSchema);
+// Creamos el modelo Token a partir del esquema
+const Token = mongoose.model("Token", tokenSchema);
 
+// Exportamos el modelo Token
 module.exports = Token;
