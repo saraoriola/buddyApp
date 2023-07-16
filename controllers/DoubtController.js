@@ -1,10 +1,10 @@
-const Doubt = require('../models/Doubts.js');
+const Doubts = require('../models/Doubts.js');
 
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
   async createDoubt(req, res) {
     try {
-      const doubt = await Doubt.create({
+      const doubt = await Doubts.create({
         ...req.body,
         user: req.user._id,
       });
@@ -20,7 +20,7 @@ const DoubtController = {
   //actualizar una duda (tiene que estar autenticado)
   async updateDoubt(req, res) {
     try {
-      const doubt = await Doubt.findByIdAndUpdate(req.params._id, req.body, {
+      const doubt = await Doubts.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
       res.send({ message: 'Successful doubt update' });
@@ -36,7 +36,7 @@ const DoubtController = {
   //TODO: not finished
   async getAllDoubtsUsersAnswers(req, res) {
     try {
-      const allDoubtsUsersAnswers = await Doubt.find();
+      const allDoubtsUsersAnswers = await Doubts.find();
       res.send(allDoubtsUsersAnswers);
     } catch (error) {
       console.log(error);
@@ -50,11 +50,11 @@ const DoubtController = {
   async createAnswer(req, res) {
     try {
       const answer = { answer: req.body.answer, user: req.user.id };
-      await Doubt.findOneAndUpdate(
+      await Doubts.findOneAndUpdate(
         { _id: req.body.doubt },
         { $push: { answers: answer } }
       );
-      const result = await Doubt.findById(req.body.doubt)
+      const result = await Doubts.findById(req.body.doubt)
         .populate('user')
         .populate('answers.user');
       res.status(201).send({ message: 'Successful answer created', result });
@@ -73,7 +73,7 @@ const DoubtController = {
         return res.status(400).send('Sorry, search too long');
       }
       const doubt = new RegExp(req.params.doubt, 'i');
-      const doubts = await Doubt.find({ doubt });
+      const doubts = await Doubts.find({ doubt });
       res.send(doubts);
     } catch (error) {
       console.error(error);
@@ -86,7 +86,7 @@ const DoubtController = {
   //Endpoint para buscar duda por id
   async getDoubtById(req, res) {
     try {
-      const doubt = await Doubt.findById(req.params._id).populate('user'); //aggregation operator, which lets you reference documents in other collections.
+      const doubt = await Doubts.findById(req.params._id).populate('user'); //aggregation operator, which lets you reference documents in other collections.
       res.send({ message: 'Successful doubt find', doubt });
     } catch (error) {
       console.error(error);
@@ -98,7 +98,7 @@ const DoubtController = {
   //Endpoint para eliminar una duda(tiene que estar autenticado)
   async deleteDoubt(req, res) {
     try {
-      const doubt = await Doubt.findByIdAndDelete(req.params._id);
+      const doubt = await Doubts.findByIdAndDelete(req.params._id);
       res.send({ message: 'Successful doubt delete', doubt });
     } catch (error) {
       console.error(error);
