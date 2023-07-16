@@ -1,19 +1,15 @@
-const { User } = require('../models');
-//TODO: WIP
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../config/config.json')['development'];
 
 const authentication = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const payload = jwt.verify(token, jwt_secret);
-    const user = await Token.findOne();
-  } catch (error) {}
-};
+    const session = jwt.verify(token, 'secretKey');
+    const user = await User.findById(session.userId);
 
-const isAdmin = async (req, res, next) => {
-  const admins = ['admin', 'superadmin'];
-  if (!admins.includes(req.user.role)) {
+    req.user = user;
+  } catch (error) {
+    console.log(error);
     return res.status(403).send({
       message: 'You do not have permissions',
     });
@@ -21,4 +17,4 @@ const isAdmin = async (req, res, next) => {
   next();
 };
 
-module.exports = { authentication, isAdmin };
+module.exports = { authentication };
