@@ -149,8 +149,38 @@ const UserController = {
       console.error(error);
       res.status(500).json({ message: 'Error al agregar puntos' });
     }
-  }
+  },
+
+  async searchUserByName(req, res) {
+    const { name } = req.query;
   
+    try {
+      const users = await User.find({ name });
+  
+      res.json({ users });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al buscar usuarios" });
+    }
+  },
+
+  async getUserById(req, res) {
+    const { id } = req.params;
+  
+    try {
+      // Buscar usuario por ID en la base de datos
+      const user = await User.findById(id);
+  
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+  
+      res.json({ user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al buscar el usuario" });
+    }
+  }
   
 };
 
