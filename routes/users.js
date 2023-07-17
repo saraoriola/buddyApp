@@ -4,8 +4,8 @@ const router = express.Router()
 // Import the user controller
 const UserController = require('../controllers/UserController');
 
-// Import the authentication
-const { authentication } = require('../middleware/authentication');
+// Import the authentication // AUTO
+const { authentication, isAdmin} = require('../middleware/authentication');
 
 // Routes for users
 // CREATE
@@ -16,7 +16,7 @@ router.post('/login', UserController.loginUser);
 router.get('/', authentication, UserController.getCurrentUser);
 
 //UPDATE
-router.put('/users/:_id/points', authentication, UserController.givePoints);
+router.put('/:_id', authentication, isAdmin, UserController.givePoints);
 
 //DELETE
 router.delete('/logout', authentication, UserController.logoutUser);

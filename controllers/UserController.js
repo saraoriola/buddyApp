@@ -37,7 +37,8 @@ const UserController = {
         lastName,
         email,
         password: hashedPassword,
-        role
+        punctuation: 0,
+        role: "student"
       });
 
       // Generar un token JWT para autenticación
@@ -76,6 +77,7 @@ const UserController = {
       const token = jwt.sign({ _id: user._id }, jwt_secret, { expiresIn: '1h' });
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
+      await user.save();
 
       // Enviar una respuesta exitosa con el token de autenticación
       res.status(200).json({ message: "Wellcome " + user.name, token });
@@ -104,47 +106,52 @@ const UserController = {
   // Método para cerrar sesión del usuario
   async logoutUser(req, res) {
     try {
-      // Obtén el token de autorización del encabezado de la solicitud
-      const token = req.headers.authentication;
-
-      // Elimina el token de la base de datos (aquí asumo que estás usando una base de datos para almacenar los tokens de sesión)
-      await Token.destroy({ where: { token } });
-
-      // Envía una respuesta exitosa
-      res.status(200).json({ message: 'Cierre de sesión exitoso' });
+      await User.findByIdAndUpdate(req.user._id, {
+        $pull: { tokens: req.headers.authorization },
+      });
+      res.send({ message: "Desconectado con éxito" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error durante el cierre de sesión' });
+      res.status(500).send({
+        message: "Hubo un problema al intentar desconectar al usuario",
+      });
     }
   },
+
 
   // Método para otorgar puntos a un usuario (solo para profesores)
   async givePoints(req, res) {
     try {
       const { _id } = req.params;
-      const { points } = req.body;
-
+  
       // Verificar si el usuario existe
       const user = await User.findById(_id);
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
-
+  
       // Verificar si el usuario tiene el rol de profesor
       if (user.role !== 'profesor') {
         return res.status(403).json({ message: 'Solo los profesores pueden otorgar puntos' });
       }
-
+  
       // Agregar los puntos al usuario
-      user.punctuation += points;
-      await user.save();
-
+      const updatedDocument = await User.findOneAndUpdate(
+        { _id },
+        { $inc: { punctuation: 1 } },
+        { new: true }
+      ).exec();
+  
+      console.log(updatedDocument);
+  
       res.json({ message: 'Puntos agregados exitosamente', user });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error al agregar puntos' });
     }
   }
+  
+  
 };
 
 // Exportar el controlador de usuarios

@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   password: String,
   role: String,
   punctuation: Number,
-  tokens: [],
+  tokens: []
 }, { timestamps: true });
 
 UserSchema.statics.findById = async function (id) {
