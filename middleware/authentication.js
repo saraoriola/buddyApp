@@ -33,18 +33,21 @@ const isAdmin = async (req, res, next) => {
 };
 
 
-// const isAuthorAnswer = async(req, res, next) => {
-//     try {
-//         const answer = await Answer.findById(req.params._id);
-//         if (order.userId.toString() !== req.user._id.toString()) { 
-//             return res.status(403).send({ message: 'Esta respuesta no es tuya' });
-//         }
-//         next();
-//     } catch (error) {
-//         console.error(error)
-//         return res.status(500).send({ error, message: 'Ha habido un problema al comprobar la autoría de la respuesta' })
-//     }
-// }
 
 
-module.exports = { authentication, isAdmin };
+const isAuthor = async(req, res, next) => {
+    try {
+        const answer = await Answer.findById(req.params._id);
+        const doubt = await Doubt.findById(answer.doubtId);
+        if ((answer.userId.toString() !== req.user._id.toString()) || (doubt.userId.toString() !== req.user._id.toString())) { 
+            return res.status(403).send({ message: 'No eres el autor' });
+        }
+        next();
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error, message: 'Ha habido un problema al comprobar la autoría de la respuesta' })
+    }
+}
+
+
+module.exports = { authentication, isAdmin, isAuthor};

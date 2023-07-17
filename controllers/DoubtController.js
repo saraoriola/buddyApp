@@ -95,10 +95,10 @@ const DoubtController = {
         { _id: req.body.doubt },
         { $push: { answers: answer } }
       );
-      const result = await Doubts.findById(req.body.doubt)
+      await Doubts.findById(req.body.doubt)
         .populate('user')
         .populate('answers.user');
-      res.status(201).send({ message: 'Successful answer created', result });
+      res.status(201).send({ message: 'Successful answer created', answer });
     } catch (error) {
       console.log(error);
       res.status(500).send({
