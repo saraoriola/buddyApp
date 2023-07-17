@@ -9,9 +9,9 @@ router.post('/login', UserController.loginUser);
 router.get('/', authentication, UserController.getCurrentUser);
 router.get('/search', authentication, UserController.searchUserByName);
 router.get("/:id", authentication, UserController.getUserById);
+router.get("/me", authentication, UserController.getCurrentUserWithDoubts);
 
-
-router.put('/:_id', authentication, isAdmin, UserController.givePoints);
+router.put('/:id/givePoints', authentication, isAdmin, UserController.givePoints);
 
 router.delete('/logout', authentication, UserController.logoutUser);
 

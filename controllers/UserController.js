@@ -1,38 +1,31 @@
-// Importar las funciones necesarias
 const User = require("../models/User.js");
+const Doubt = require("../models/Doubts.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/keys.js");
 
-// Definir el controlador de usuarios
 const UserController = {
-  // Método para crear un nuevo usuario
   async registerUser(req, res, next) {
     const { name, lastName, email, password, role } = req.body;
 
-    // Validación de los campos requeridos
     if (!name || !lastName || !email || !password || !role) {
-      return res.status(400).json({ message: "Todos los campos son obligatorios" });
+      return res.status(400).json({ message: "All fields are mandatory" });
     }
 
-    // Validación del dominio de correo electrónico
     const emailDomain = email.split("@")[1];
     if (emailDomain !== "edem.es") {
-      return res.status(400).json({ message: "Solo se permiten direcciones de correo electrónico de EDEM" });
+      return res.status(400).json({ message: "Only EDEM email addresses are allowed" });
     }
 
     try {
-      // Verificar si el usuario ya existe
       const existingUser = await User.findOne({ email });
       if (existingUser) {
-        return res.status(409).json({ message: 'El usuario ya existe' });
+        return res.status(409).json({ message: 'User already exists' });
       }
 
-      // Generar la contraseña cifrada
       const hashedPassword = await bcrypt.hashSync(password, 10);
 
-      // Crear el usuario
-      const user = await User.create({ //req.body
+      const user = await User.create({
         name,
         lastName,
         email,
@@ -41,113 +34,90 @@ const UserController = {
         role: "student"
       });
 
-      // Generar un token JWT para autenticación
       const token = jwt.sign({ _id: User._id }, jwt_secret, { expiresIn: '1h' });
 
-      res.status(201).json({ message: 'Usuario registrado exitosamente', user, token });
+      res.status(201).json({ message: 'User registered successfully', user, token });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error al registrar el usuario' });
+      res.status(500).json({ message: 'Error registering user' });
       next(error);
     }
   },
 
-  // Método para iniciar sesión de un usuario
   async loginUser(req, res, next) {
     const { email, password } = req.body;
-
+  
     try {
-      // Buscar el usuario por correo electrónico en la base de datos
       const user = await User.findOne({ email });
-
-      // Verificar si el usuario existe
+  
       if (!user) {
-        return res.status(401).json({ message: 'Credenciales inválidas' });
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
-
-      // Comparar la contraseña proporcionada con la contraseña almacenada
+  
       const isMatch = await bcrypt.compareSync(password, user.password);
-
-      // Verificar si las contraseñas coinciden
+  
       if (!isMatch) {
-        return res.status(401).json({ message: 'Credenciales inválidas' });
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
-
-      // Generar un token JWT para autenticación
+  
       const token = jwt.sign({ _id: user._id }, jwt_secret, { expiresIn: '1h' });
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
-
-      // Enviar una respuesta exitosa con el token de autenticación
-      res.status(200).json({ message: "Wellcome " + user.name, token });
+  
+      res.status(200).json({ message: "Welcome " + user.name, token });
       next();
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error durante el inicio de sesión' });
+      res.status(500).json({ message: 'Error during login' });
       next(error);
     }
   },
-
-  // Método para obtener el usuario actual
+  
   async getCurrentUser(req, res) {
     try {
-      // Obtener la información del usuario autenticado desde el objeto `req.user` gracias al middleware de autenticación
       const user = req.user;
-
-      // Devolver la información del usuario
       res.json({ user });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error al recuperar la información del usuario' });
+      res.status(500).json({ message: 'Error retrieving user information' });
     }
   },
-
-  // Método para cerrar sesión del usuario
+  
   async logoutUser(req, res) {
     try {
       await User.findByIdAndUpdate(req.user._id, {
         $pull: { tokens: req.headers.authorization },
       });
-      res.send({ message: "Desconectado con éxito" });
+      res.send({ message: "Logged out successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).send({
-        message: "Hubo un problema al intentar desconectar al usuario",
+        message: "There was a problem logging out the user",
       });
     }
   },
-
-
-  // Método para otorgar puntos a un usuario (solo para profesores)
+  
   async givePoints(req, res) {
+    const { id } = req.params;
+  
     try {
-      const { _id } = req.params;
-  
-      // Verificar si el usuario existe
-      const user = await User.findById(_id);
+      const user = await User.findById(id);
       if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado' });
+        return res.status(404).json({ message: 'User not found' });
       }
   
-      // Verificar si el usuario tiene el rol de profesor
-      if (user.role !== 'profesor') {
-        return res.status(403).json({ message: 'Solo los profesores pueden otorgar puntos' });
+      if (user.role !== 'teacher' && user.role !== 'teacherAssistant') {
+        return res.status(403).json({ message: 'Only teachers can give points' });
       }
   
-      // Agregar los puntos al usuario
-      const updatedDocument = await User.findOneAndUpdate(
-        { _id },
-        { $inc: { punctuation: 1 } },
-        { new: true }
-      ).exec();
+      user.punctuation += 1;
+      await user.save();
   
-      console.log(updatedDocument);
-  
-      res.json({ message: 'Puntos agregados exitosamente', user });
+      res.json({ message: 'Points added successfully', user });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error al agregar puntos' });
+      res.status(500).json({ message: 'Error adding points' });
     }
   },
 
@@ -160,29 +130,39 @@ const UserController = {
       res.json({ users });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error al buscar usuarios" });
+      res.status(500).json({ message: "Error searching for users" });
     }
   },
-
+  
   async getUserById(req, res) {
     const { id } = req.params;
   
     try {
-      // Buscar usuario por ID en la base de datos
       const user = await User.findById(id);
   
       if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
+        return res.status(404).json({ message: "User not found" });
       }
   
       res.json({ user });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error al buscar el usuario" });
+      res.status(500).json({ message: "Error searching for the user" });
+    }
+  },
+  
+  async getCurrentUserWithDoubts(req, res) {
+    try {
+      const user = req.user;
+      const doubts = await Doubt.find({ userId: user._id });
+  
+      res.json({ user, doubts });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error retrieving user information and doubts" });
     }
   }
   
 };
 
-// Exportar el controlador de usuarios
 module.exports = UserController;
