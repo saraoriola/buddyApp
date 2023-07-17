@@ -6,10 +6,11 @@ const { authentication } = require('../middleware/authentication');
 //crear una duda( tiene que estar autenticado)
 router.post('/createDoubt', authentication, DoubtController.createDoubt);
 
-// router.get(
-//   '/getAllDoubtsUsersAnswers',
-//   DoubtController.getAllDoubtsUsersAnswers
-// );
+router.get(
+  '/getAllDoubtsUsersAnswers',
+  DoubtController.getAllDoubtsUsersAnswers
+);
+
 router.get('/getDoubtByDoubt/doubt/:doubt', DoubtController.getDoubtByDoubt);
 router.get('/getDoubtById/id/:_id', DoubtController.getDoubtById);
 //actualizar una duda ( tiene que estar autenticado)
