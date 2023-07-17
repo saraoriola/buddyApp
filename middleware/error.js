@@ -7,7 +7,7 @@ const handleValidationError = (err, res) => {
   }
 
   if (errors.length > 1) {
-    const errorMsg = errors.join(" || ");
+    const errorMsg = errors.join(' || ');
     res.status(400).send({ messages: errorMsg });
   } else {
     res.status(400).send({ messages: errors });
@@ -15,10 +15,10 @@ const handleValidationError = (err, res) => {
 };
 
 const typeError = (err, req, res, next) => {
-  if (err.name === "ValidationError") {
+  if (err.name === 'ValidationError') {
     handleValidationError(err, res);
   } else {
-    res.status(500).send({ msg: "Something went wrong", err });
+    res.status(500).send({ msg: 'Something went wrong', err });
   }
 };
 

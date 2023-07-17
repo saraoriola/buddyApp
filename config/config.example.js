@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
-const { MONGO_URI } = require("./keys");
+const mongoose = require('mongoose');
+const { MONGO_URI } = require('./keys');
 
 const dbConnection = async () => {
     try {
         await mongoose.connect(MONGO_URI);
-        console.log("Database connected successfully");
+        console.log('Database connected successfully');
     } catch (error) {
         console.error(error);
-        throw new Error("Error initializing the database");
+        throw new Error('Error initializing the database');
     }
 };
 

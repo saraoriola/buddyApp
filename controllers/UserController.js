@@ -1,20 +1,20 @@
-const User = require("../models/User.js");
-const Doubt = require("../models/Doubts.js");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { jwt_secret } = require("../config/keys.js");
+const User = require('../models/User.js');
+const Doubt = require('../models/Doubts.js');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { jwt_secret } = require('../config/keys.js');
 
 const UserController = {
   async registerUser(req, res, next) {
     const { name, lastName, email, password, role } = req.body;
 
     if (!name || !lastName || !email || !password || !role) {
-      return res.status(400).json({ message: "All fields are mandatory" });
+      return res.status(400).json({ message: 'All fields are mandatory' });
     }
 
-    const emailDomain = email.split("@")[1];
-    if (emailDomain !== "edem.es") {
-      return res.status(400).json({ message: "Only EDEM email addresses are allowed" });
+    const emailDomain = email.split('@')[1];
+    if (emailDomain !== 'edem.es') {
+      return res.status(400).json({ message: 'Only EDEM email addresses are allowed' });
     }
 
     try {
@@ -31,7 +31,7 @@ const UserController = {
         email,
         password: hashedPassword,
         punctuation: 0,
-        role: "student"
+        role: 'student'
       });
 
       const token = jwt.sign({ _id: User._id }, jwt_secret, { expiresIn: '1h' });
@@ -65,7 +65,7 @@ const UserController = {
       user.tokens.push(token);
       await user.save();
   
-      res.status(200).json({ message: "Welcome " + user.name, token });
+      res.status(200).json({ message: 'Welcome ' + user.name, token });
       next();
     } catch (error) {
       console.error(error);
@@ -89,11 +89,11 @@ const UserController = {
       await User.findByIdAndUpdate(req.user._id, {
         $pull: { tokens: req.headers.authorization },
       });
-      res.send({ message: "Logged out successfully" });
+      res.send({ message: 'Logged out successfully' });
     } catch (error) {
       console.error(error);
       res.status(500).send({
-        message: "There was a problem logging out the user",
+        message: 'There was a problem logging out the user',
       });
     }
   },
@@ -130,7 +130,7 @@ const UserController = {
       res.json({ users });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error searching for users" });
+      res.status(500).json({ message: 'Error searching for users' });
     }
   },
   
@@ -141,13 +141,13 @@ const UserController = {
       const user = await User.findById(id);
   
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: 'User not found' });
       }
   
       res.json({ user });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error searching for the user" });
+      res.status(500).json({ message: 'Error searching for the user' });
     }
   },
   
@@ -159,7 +159,7 @@ const UserController = {
       res.json({ user, doubts });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error retrieving user information and doubts" });
+      res.status(500).json({ message: 'Error retrieving user information and doubts' });
     }
   }
   

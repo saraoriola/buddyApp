@@ -23,16 +23,16 @@ function handleRouteChange() {
   function renderRegisterForm(container) {
     container.innerHTML = `
       <h2>Register Page</h2>
-      <form id="registerForm" onsubmit="submitRegisterForm(event)">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Register</button>
+      <form id='registerForm' onsubmit='submitRegisterForm(event)'>
+        <label for='name'>Name:</label>
+        <input type='text' id='name' name='name' required>
+        <label for='lastName'>Last Name:</label>
+        <input type='text' id='lastName' name='lastName' required>
+        <label for='email'>Email:</label>
+        <input type='email' id='email' name='email' required>
+        <label for='password'>Password:</label>
+        <input type='password' id='password' name='password' required>
+        <button type='submit'>Register</button>
       </form>
     `;
   }
@@ -41,12 +41,12 @@ function handleRouteChange() {
   function renderLoginForm(container) {
     container.innerHTML = `
       <h2>Login Page</h2>
-      <form id="loginForm" onsubmit="submitLoginForm(event)">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Login</button>
+      <form id='loginForm' onsubmit='submitLoginForm(event)'>
+        <label for='email'>Email:</label>
+        <input type='email' id='email' name='email' required>
+        <label for='password'>Password:</label>
+        <input type='password' id='password' name='password' required>
+        <button type='submit'>Login</button>
       </form>
     `;
   }
