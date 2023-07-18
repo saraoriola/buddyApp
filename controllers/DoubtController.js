@@ -20,7 +20,10 @@ const DoubtController = {
   async getAllDoubtsUsersAnswers(req, res) {
     try {
       const all = {};
+      const { page = 1, limit = 10 } = req.query;
       const allDoubtsUsersAnswers = await Doubts.find()
+        .limit(limit)
+        .skip((page - 1) * limit)
         .populate('user')
         .populate('answers.user');
       res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
