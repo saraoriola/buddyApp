@@ -1,25 +1,21 @@
-const handleValidationError = (err, res) => {
-  let errors = [];
-  for (let field in err.errors) {
-    if (err.errors.hasOwnProperty(field)) {
-      errors.push(err.errors[field].message);
-    }
-  }
-
+const handleValidationErrors = (error, response) => {
+  const errors = Object.values(error.errors).map(element => element.message);
   if (errors.length > 1) {
-    const errorMsg = errors.join(' || ');
-    res.status(400).send({ messages: errorMsg });
+      const errorMessages = errors.join(" || ");
+      response.status(400).send({ messages: errorMessages });
   } else {
-    res.status(400).send({ messages: errors });
+      response.status(400).send({ message: errors });
   }
 };
 
-const typeError = (err, req, res, next) => {
-  if (err.name === 'ValidationError') {
-    handleValidationError(err, res);
+const handleTypeError = (error, request, response, next) => {
+  if (error.name === "ValidationError") {
+      handleValidationErrors(error, response);
+  } else if (error.code === 11000) {
+      response.status(400).send("El correo tiene que ser único");
   } else {
-    res.status(500).send({ msg: 'Something went wrong', err });
+      response.status(500).send("Hubo un problema");
   }
 };
 
-module.exports = { typeError };
+module.exports = { handleTypeError };

@@ -54,6 +54,10 @@ const UserController = {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
   
+      if (!user.confirmed) {
+        return res.status(400).send({ message: 'You must confirm your email' });
+      }
+  
       const isMatch = await bcrypt.compareSync(password, user.password);
   
       if (!isMatch) {
