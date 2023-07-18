@@ -2,7 +2,7 @@ const Doubts = require('../models/Doubts.js');
 
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
-  async createDoubt(req, res) {
+  async createDoubt(req, res, next) {
     try {
       const doubt = await Doubts.create({
         ...req.body,
@@ -11,24 +11,55 @@ const DoubtController = {
       res.status(201).send({ message: 'Successful doubt created', doubt });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem creating your question' });
+      next(error);
     }
   },
-  // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
-  async getAllDoubtsUsersAnswers(req, res) {
+  //TODO: endpoint does not work and maybe function too.Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
+  async appp(req, res) {
     try {
+<<<<<<< HEAD
       const all = {};
       const allDoubtsUsersAnswers = await Doubts.find()
         .populate('user')
         .populate('answers.user');
       res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
+=======
+      const allDoubtUserAndAnswers = await Doubts.find();
+      // .populate('user')
+      // .populate('answers.answer');
+      // console.log(allDoubtUserAndAnswers);
+      // console.log('hey');
+      res.send({
+        message: 'Successful doubts & user and answer are shown',
+        allDoubtUserAndAnswers,
+      });
+>>>>>>> 6a18d42 (WIP getDoubtsUserAndAnswers)
     } catch (error) {
       console.log(error);
       res.status(500).send({
         message:
           'Sorry, there was a problem to show all doubts, the users or their answers',
+      });
+    }
+  },
+  // TODO: WIP show some fields. Vídeo 55:50h Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
+  async getAllDoubtsUsersAnswers(req, res) {
+    try {
+      const all = {};
+      const allDoubtsUsersAnswers = await Doubts.find()
+        .populate('user', 'name')
+        .populate('answers.user', 'name')
+        .exec();
+
+      res.send({
+        message: 'Successful doubts & user and answer & user are shown',
+        allDoubtsUsersAnswers,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message:
+          'Sorry, there was a problem to show all doubts, the users or their answers or users',
       });
     }
   },
@@ -71,7 +102,7 @@ const DoubtController = {
       console.error(error);
       res
         .status(500)
-        .send({ message: `Sorry, the doubt cannot be updated after 30'` }); //
+        .send({ message: `Sorry, the doubt cannot update your question` }); //
     }
   },
   //Endpoint para eliminar una duda(tiene que estar autenticado)
@@ -89,6 +120,12 @@ const DoubtController = {
   // Endpoint para crear una respuesta en una determinada duda
   async createAnswer(req, res) {
     try {
+<<<<<<< HEAD
+=======
+      if (!req.body.answer) {
+        return res.status(400).send('Please, fill in your answer');
+      }
+>>>>>>> 6a18d42 (WIP getDoubtsUserAndAnswers)
       const answer = await Doubts.findByIdAndUpdate(
         req.params._id,
         {
@@ -107,7 +144,7 @@ const DoubtController = {
       });
     }
   },
-  //Read respuesta
+  //TODO: WIP extra? -> AnswerController Read respuesta
   async getAnswerByAnswer(req, res) {
     try {
       if (req.params.answer.length > 20) {
@@ -126,9 +163,9 @@ const DoubtController = {
     }
   },
 
-  //Update respuesta
+  //TODO: WIP extra? -> AnswerController Update respuesta
 
-  //Delete respuesta
+  //TODO: WIP extra? -> AnswerController Delete respuesta
 
   //Dar un voto a una respuesta
 
