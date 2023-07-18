@@ -198,6 +198,18 @@ const UserController = {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving user information and doubts' });
     }
+  },
+
+  async getRanking(req, res) {
+    try {
+      const users = await User.find()
+        .sort({ punctuation: -1 })
+        .select('name _id punctuation');
+      res.json({ users });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error retrieving users' });
+    }
   }
   
 };
