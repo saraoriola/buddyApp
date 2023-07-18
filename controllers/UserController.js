@@ -29,10 +29,10 @@ const UserController = {
       return res.status(400).json({ message: 'All fields are mandatory' });
     }
   
-    // const emailDomain = email.split('@')[1];
-    // if (emailDomain !== 'edem.es') {
-    //   return res.status(400).json({ message: 'Only EDEM email addresses are allowed' });
-    // }
+    const emailDomain = email.split('@')[1];
+    if (emailDomain !== 'edem.es') {
+      return res.status(400).json({ message: 'Only EDEM email addresses are allowed' });
+    }
   
     try {
       const existingUser = await User.findOne({ email });
