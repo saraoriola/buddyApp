@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.SchemaTypes.ObjectId;
+//const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const UserSchema = new mongoose.Schema(
   {
@@ -18,18 +18,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please fill in your password"],
     },
-    age: {
-      type: Number,
-      required: [true, "Please fill in your age"],
-    },
     role: {
       type: String,
       default: "user",
-    },
+    },    
     punctuation: Number,
-    confirmed: false,
+    confirmed: {
+      type: Boolean,
+      default: false,
+    },
     tokens: [],
-    doubtIds: [{ type: ObjectId, ref: "Doubt" }],
+    //doubtIds: [{ type: ObjectId, ref: "Doubt" }],
+    //wishList: [{ type: ObjectId, ref: 'Answer' }],
   },
   { timestamps: true }
 );

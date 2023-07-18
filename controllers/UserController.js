@@ -1,29 +1,55 @@
 const User = require('../models/User.js');
 const Doubt = require('../models/Doubts.js');
+const transporter = require("../config/nodemailer");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { jwt_secret } = require('../config/keys.js');
 
 const UserController = {
+
+  async confirm(req, res) {
+    try {
+      const token = req.params.emailToken
+      const payload = jwt.verify(token,jwt_secret)
+      await User.update({ confirmed: true }, {
+        where: {
+          email: payload.email
+        }
+      });
+      res.status(201).send("User successfully confirmed");
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  
   async registerUser(req, res, next) {
     const { name, lastName, email, password, role } = req.body;
-
+  
     if (!name || !lastName || !email || !password || !role) {
       return res.status(400).json({ message: 'All fields are mandatory' });
     }
-
-    const emailDomain = email.split('@')[1];
-    if (emailDomain !== 'edem.es') {
-      return res.status(400).json({ message: 'Only EDEM email addresses are allowed' });
-    }
-
+  
+    // const emailDomain = email.split('@')[1];
+    // if (emailDomain !== 'edem.es') {
+    //   return res.status(400).json({ message: 'Only EDEM email addresses are allowed' });
+    // }
+  
     try {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(409).json({ message: 'User already exists' });
       }
-
+  
       const hashedPassword = await bcrypt.hashSync(password, 10);
+      const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'48h'})
+      const url = 'http://localhost:3000/users/confirm/'+ emailToken
+      await transporter.sendMail({
+        to: req.body.email,
+        subject: "Confirme su registro",
+        html: `<h3>Bienvenido, estas a un paso de registrarte </h3>
+        <a href="${url}"> Click para confirmar tu registro</a>
+        `,
+      });
 
       const user = await User.create({
         name,
@@ -33,9 +59,16 @@ const UserController = {
         punctuation: 0,
         role: 'student'
       });
-
+  
       const token = jwt.sign({ _id: User._id }, jwt_secret, { expiresIn: '1h' });
-
+  
+      await transporter.sendMail({
+        to: email,
+        subject: 'Confirm Your Registration',
+        html: `<h3>Welcome, you're one step away from registering</h3>
+        <a href="${url}">Click to confirm your registration</a>`
+      });
+  
       res.status(201).json({ message: 'User registered successfully', user, token });
     } catch (error) {
       console.error(error);

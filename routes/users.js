@@ -6,6 +6,7 @@ const { authentication, isAdmin } = require('../middleware/authentication');
 router.post('/', UserController.registerUser);
 router.post('/login', UserController.loginUser);
 
+router.get('/confirm/:emailToken', UserController.confirm);
 router.get('/', authentication, UserController.getCurrentUser);
 router.get('/search', authentication, UserController.searchUserByName);
 router.get('/:id', authentication, UserController.getUserById);
