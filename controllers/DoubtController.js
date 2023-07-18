@@ -8,7 +8,6 @@ const DoubtController = {
         ...req.body,
         user: req.user._id,
       });
-
       res.status(201).send({ message: 'Successful doubt created', doubt });
     } catch (error) {
       console.error(error);
@@ -24,7 +23,7 @@ const DoubtController = {
       const allDoubtsUsersAnswers = await Doubts.find()
         .populate('user')
         .populate('answers.user');
-      res.send({ message: 'Successful answer created', allDoubtsUsersAnswers });
+      res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -90,19 +89,21 @@ const DoubtController = {
   // Endpoint para crear una respuesta en una determinada duda
   async createAnswer(req, res) {
     try {
-      const answer = { answer: req.body.answer, user: req.user.id };
-      await Doubts.findOneAndUpdate(
-        { _id: req.body.doubt },
-        { $push: { answers: answer } }
+      const answer = await Doubts.findByIdAndUpdate(
+        req.params._id,
+        {
+          $push: {
+            answers: { answer: req.body.answer, userId: req.user._id },
+          },
+        },
+        { new: true }
       );
-      await Doubts.findById(req.body.doubt)
-        .populate('user')
-        .populate('answers.user');
+      await Doubts.findById(req.body.doubt).populate('user', 'answers.user');
       res.status(201).send({ message: 'Successful answer created', answer });
     } catch (error) {
       console.log(error);
       res.status(500).send({
-        message: 'Sorry, there was a problem to create the answers',
+        message: 'Sorry, there was a problem creating the answers',
       });
     }
   },
