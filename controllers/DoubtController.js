@@ -18,13 +18,13 @@ const DoubtController = {
   async getAllDoubtsUsersAnswers(req, res) {
     try {
       const all = {};
+      const { page = 1, limit = 10 } = req.query;
       const allDoubtsUsersAnswers = await Doubts.find()
-        .populate('user', 'name')
-        .populate('answers', 'name');
-      res.send({
-        message: 'Successful doubts & user and answer are shown',
-        allDoubtsUsersAnswers,
-      });
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .populate('user')
+        .populate('answers.user');
+      res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
     } catch (error) {
       console.log(error);
       res.status(500).send({
