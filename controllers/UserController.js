@@ -158,6 +158,32 @@ const UserController = {
     }
   },
 
+  removePoints: async (req, res) => {
+    const { userId } = req.params;
+    
+    try {
+      const user = await User.findById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      if (req.user.role !== 'teacherAssistant') {
+        return res.status(403).json({ message: 'Only teacher assistants can remove points' });
+      }
+      
+      if (user.punctuation > 0) {
+        user.punctuation -= 1;
+        await user.save();
+      }
+      
+      res.json({ message: 'Points removed successfully', user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error removing points' });
+    }
+  },
+
   async searchUserByName(req, res) {
     const { name } = req.query;
   
