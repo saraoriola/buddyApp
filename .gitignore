@@ -3,3 +3,4 @@ config.js
 keys.js
 nodemailer.js
 .DS_Store
+.env
