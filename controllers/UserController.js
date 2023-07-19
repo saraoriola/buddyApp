@@ -41,14 +41,13 @@ const UserController = {
       }
   
       const hashedPassword = await bcrypt.hashSync(password, 10);
-      const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'48h'})
+      const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'1h'})
       const url = 'http://localhost:3000/users/confirm/'+ emailToken
       await transporter.sendMail({
         to: req.body.email,
-        subject: "Confirme su registro",
-        html: `<h3>Bienvenido, estas a un paso de registrarte </h3>
-        <a href="${url}"> Click para confirmar tu registro</a>
-        `,
+        subject: 'Confirm Your Registration',
+        html: `<h3>Welcome, you're one step away from registering</h3>
+        <a href="${url}">Click to confirm your registration</a>`
       });
 
       const user = await User.create({
@@ -58,15 +57,6 @@ const UserController = {
         password: hashedPassword,
         punctuation: 0,
         role: 'student'
-      });
-  
-      const token = jwt.sign({ _id: User._id }, jwt_secret, { expiresIn: '1h' });
-  
-      await transporter.sendMail({
-        to: email,
-        subject: 'Confirm Your Registration',
-        html: `<h3>Welcome, you're one step away from registering</h3>
-        <a href="${url}">Click to confirm your registration</a>`
       });
   
       res.status(201).json({ message: 'User registered successfully', user, token });
