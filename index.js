@@ -12,6 +12,7 @@ app.use(express.json());
 
 app.use('/users', require('./routes/users'));
 app.use('/doubts', require('./routes/doubts'));
+app.use('/answers', require('./routes/answers'));
 
 app.use(handleTypeError);
 

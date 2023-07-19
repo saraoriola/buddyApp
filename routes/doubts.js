@@ -5,17 +5,12 @@ const { authentication, isAuthor } = require('../middleware/authentication');
 
 //crear una duda( tiene que estar autenticado)
 router.post('/createDoubt', authentication, DoubtController.createDoubt);
-router.put('/createAnswer/:_id', authentication, DoubtController.createAnswer);
+router.post('/createAnswer', authentication, DoubtController.createAnswer);
 
 router.get(
   '/getAllDoubtsUsersAnswers',
   DoubtController.getAllDoubtsUsersAnswers
 );
-router.get(
-  '/getAllDoubtsUsersAnswersUser',
-  DoubtController.getAllDoubtsUsersAnswersUser
-);
-
 //router.get('/getAnswerByAnswer/answer/:answer', DoubtController.getAnswerByAnswer); EXTRA WIP
 
 router.get('/getDoubtByDoubt/doubt/:doubt', DoubtController.getDoubtByDoubt);
@@ -28,6 +23,8 @@ router.put(
   isAuthor,
   DoubtController.updateDoubt
 );
+router.put('/likes/:_id', authentication, DoubtController.like);
+
 router.delete(
   '/deleteDoubt/id/:_id',
   authentication,

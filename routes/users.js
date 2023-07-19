@@ -11,9 +11,12 @@ router.get('/', authentication, UserController.getCurrentUser);
 router.get('/search', authentication, UserController.searchUserByName);
 router.get('/:id', authentication, UserController.getUserById);
 router.get('/me', authentication, UserController.getCurrentUserWithDoubts);
+router.get('/ranking', UserController.getRanking);
   
 
-router.put('/:id/givePoints', authentication, isAdmin, UserController.givePoints);
+router.put('/:_id/givePoints', authentication, isAdmin, UserController.givePoints);
+router.put('/:_id/points/removePoints', authentication, isAdmin, UserController.removePoints);
+
 
 router.delete('/logout', authentication, UserController.logoutUser);
 

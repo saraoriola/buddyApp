@@ -2,7 +2,7 @@ const Doubts = require('../models/Doubts.js');
 
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
-  async createDoubt(req, res, next) {
+  async createDoubt(req, res) {
     try {
       const doubt = await Doubts.create({
         ...req.body,
@@ -11,10 +11,12 @@ const DoubtController = {
       res.status(201).send({ message: 'Successful doubt created', doubt });
     } catch (error) {
       console.error(error);
-      next(error);
+      res
+        .status(500)
+        .send({ message: 'Sorry, there was a problem creating your question' });
     }
   },
-  //TODO: endpoint does not work and maybe function too.Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
+  // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
   async getAllDoubtsUsersAnswers(req, res) {
     try {
       const all = {};
@@ -30,27 +32,6 @@ const DoubtController = {
       res.status(500).send({
         message:
           'Sorry, there was a problem to show all doubts, the users or their answers',
-      });
-    }
-  },
-  // show some fields. Vídeo 55:50h Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
-  async getAllDoubtsUsersAnswersUser(req, res) {
-    try {
-      const all = {};
-      const allDoubtsUsersAnswers = await Doubts.find()
-        .populate('user', 'name')
-        .populate('answers.user', 'name')
-        .exec();
-
-      res.send({
-        message: 'Successful doubts & user and answer & user are shown',
-        allDoubtsUsersAnswers,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({
-        message:
-          'Sorry, there was a problem to show all doubts, the users or their answers or users',
       });
     }
   },
@@ -93,7 +74,7 @@ const DoubtController = {
       console.error(error);
       res
         .status(500)
-        .send({ message: `Sorry, the doubt cannot update your question` }); //
+        .send({ message: `Sorry, the doubt cannot be updated after 30'` }); //
     }
   },
   //Endpoint para eliminar una duda(tiene que estar autenticado)
@@ -111,9 +92,6 @@ const DoubtController = {
   // Endpoint para crear una respuesta en una determinada duda
   async createAnswer(req, res) {
     try {
-      if (!req.body.answer) {
-        return res.status(400).send('Please, fill in your answer');
-      }
       const answer = await Doubts.findByIdAndUpdate(
         req.params._id,
         {
@@ -132,7 +110,7 @@ const DoubtController = {
       });
     }
   },
-  //TODO: WIP extra? -> AnswerController Read respuesta
+  //Read respuesta
   async getAnswerByAnswer(req, res) {
     try {
       if (req.params.answer.length > 20) {
@@ -151,12 +129,32 @@ const DoubtController = {
     }
   },
 
-  //TODO: WIP extra? -> AnswerController Update respuesta
+  //Update respuesta
 
-  //TODO: WIP extra? -> AnswerController Delete respuesta
+  //Delete respuesta
 
   //Dar un voto a una respuesta
 
   //Quitar un voto a una respuesta
+
+  //doubtList (add like)
+  async like(req, res) {
+    try {
+      const doubt = await Doubt.findByIdAndUpdate(
+        req.params._id,
+        { $push: { likes: req.user._id } },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { wishList: req.params._id } },
+        { new: true }
+      );
+      res.send(doubt);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'There was a problem with your like' });
+    }
+  },
 };
 module.exports = DoubtController;

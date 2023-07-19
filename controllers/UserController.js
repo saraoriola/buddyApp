@@ -45,10 +45,9 @@ const UserController = {
       const url = 'http://localhost:3000/users/confirm/'+ emailToken
       await transporter.sendMail({
         to: req.body.email,
-        subject: "Confirme su registro",
-        html: `<h3>Bienvenido, estas a un paso de registrarte </h3>
-        <a href="${url}"> Click para confirmar tu registro</a>
-        `,
+        subject: 'Confirm Your Registration',
+        html: `<h3>Welcome, you're one step away from registering</h3>
+        <a href="${url}">Click to confirm your registration</a>`
       });
 
       const user = await User.create({
@@ -113,7 +112,12 @@ const UserController = {
   
   async getCurrentUser(req, res) {
     try {
-      const user = req.user;
+      const user = await User.findById(req.user._id)
+        .populate({
+          path: "doubtIds",
+        })
+        .populate("doubtList");
+  
       res.json({ user });
     } catch (error) {
       console.error(error);
@@ -158,6 +162,32 @@ const UserController = {
     }
   },
 
+  removePoints: async (req, res) => {
+    const { userId } = req.params;
+    
+    try {
+      const user = await User.findById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      if (req.user.role !== 'teacherAssistant') {
+        return res.status(403).json({ message: 'Only teacher assistants can remove points' });
+      }
+      
+      if (user.punctuation > 0) {
+        user.punctuation -= 1;
+        await user.save();
+      }
+      
+      res.json({ message: 'Points removed successfully', user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error removing points' });
+    }
+  },
+
   async searchUserByName(req, res) {
     const { name } = req.query;
   
@@ -197,6 +227,18 @@ const UserController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving user information and doubts' });
+    }
+  },
+
+  async getRanking(req, res) {
+    try {
+      const users = await User.find()
+        .sort({ punctuation: -1 })
+        .select('name _id punctuation');
+      res.json({ users });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error retrieving users' });
     }
   }
   
