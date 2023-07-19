@@ -3,14 +3,14 @@ const Doubt = require('../models/Doubts.js');
 const transporter = require("../config/nodemailer");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../config/keys.js');
+require('dotenv').config()
 
 const UserController = {
 
   async confirm(req, res) {
     try {
       const token = req.params.emailToken
-      const payload = jwt.verify(token,jwt_secret)
+      const payload = jwt.verify(token,process.env.JWT_SECRET)
       await User.update({ confirmed: true }, {
         where: {
           email: payload.email
@@ -41,7 +41,7 @@ const UserController = {
       }
   
       const hashedPassword = await bcrypt.hashSync(password, 10);
-      const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'1h'})
+      const emailToken = jwt.sign({email:req.body.email},process.env.JWT_SECRET,{expiresIn:'48h'})
       const url = 'http://localhost:3000/users/confirm/'+ emailToken
       await transporter.sendMail({
         to: req.body.email,
@@ -57,6 +57,15 @@ const UserController = {
         password: hashedPassword,
         punctuation: 0,
         role: 'student'
+      });
+  
+      const token = jwt.sign({ _id: User._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  
+      await transporter.sendMail({
+        to: email,
+        subject: 'Confirm Your Registration',
+        html: `<h3>Welcome, you're one step away from registering</h3>
+        <a href="${url}">Click to confirm your registration</a>`
       });
   
       res.status(201).json({ message: 'User registered successfully', user, token });
@@ -87,7 +96,7 @@ const UserController = {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
   
-      const token = jwt.sign({ _id: user._id }, jwt_secret, { expiresIn: '1h' });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
