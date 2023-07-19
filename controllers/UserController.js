@@ -3,14 +3,15 @@ const Doubt = require('../models/Doubts.js');
 const transporter = require("../config/nodemailer");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../config/keys.js');
+require('dotenv').config()
+
 
 const UserController = {
 
   async confirm(req, res) {
     try {
       const token = req.params.emailToken
-      const payload = jwt.verify(token,jwt_secret)
+      const payload = jwt.verify(token,process.env.JWT_SECRET)
       await User.update({ confirmed: true }, {
         where: {
           email: payload.email
@@ -41,14 +42,13 @@ const UserController = {
       }
   
       const hashedPassword = await bcrypt.hashSync(password, 10);
-      const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'48h'})
+      const emailToken = jwt.sign({email:req.body.email},process.env.JWT_SECRET,{expiresIn:'48h'})
       const url = 'http://localhost:3000/users/confirm/'+ emailToken
       await transporter.sendMail({
         to: req.body.email,
-        subject: "Confirme su registro",
-        html: `<h3>Bienvenido, estas a un paso de registrarte </h3>
-        <a href="${url}"> Click para confirmar tu registro</a>
-        `,
+        subject: 'Confirm Your Registration',
+        html: `<h3>Welcome, you're one step away from registering</h3>
+        <a href="${url}">Click to confirm your registration</a>`
       });
 
       const user = await User.create({
@@ -60,15 +60,6 @@ const UserController = {
         role: 'student'
       });
   
-      const token = jwt.sign({ _id: User._id }, jwt_secret, { expiresIn: '1h' });
-  
-      await transporter.sendMail({
-        to: email,
-        subject: 'Confirm Your Registration',
-        html: `<h3>Welcome, you're one step away from registering</h3>
-        <a href="${url}">Click to confirm your registration</a>`
-      });
-  
       res.status(201).json({ message: 'User registered successfully', user, token });
     } catch (error) {
       console.error(error);
@@ -77,6 +68,42 @@ const UserController = {
     }
   },
 
+  async recoverPassword(req, res) {
+    try {
+      const recoverToken = jwt.sign({ email: req.params.email }, process.env.JWT_SECRET, {
+        expiresIn: "48h",
+      });
+      const url = "http://localhost:3000/users/resetPassword/" + recoverToken;
+      await transporter.sendMail({
+        to: req.params.email,
+        subject: "Recover Password",
+        html: `<h3>Recover Password</h3>
+          <a href="${url}">Recover Password</a>
+          The link will expire in 48 hours
+        `,
+      });
+      res.send({
+        message: "A recovery email has been sent to your email address",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  
+  async resetPassword(req, res) {
+    try {
+      const recoverToken = req.params.recoverToken;
+      const payload = jwt.verify(recoverToken, process.env.JWT_SECRET);
+      await User.findOneAndUpdate(
+        { email: payload.email },
+        { password: req.body.password }
+      );
+      res.send({ message: "Password changed successfully" });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  
   async loginUser(req, res, next) {
     const { email, password } = req.body;
   
@@ -97,7 +124,7 @@ const UserController = {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
   
-      const token = jwt.sign({ _id: user._id }, jwt_secret, { expiresIn: '1h' });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
@@ -111,7 +138,7 @@ const UserController = {
     }
   },
   
-  async getCurrentUser(req, res) {
+  async getCurrentUser (req, res) {
     try {
       const user = req.user;
       res.json({ user });
@@ -158,6 +185,32 @@ const UserController = {
     }
   },
 
+  async removePoints(req, res){
+    const { id } = req.params;
+    
+    try {
+      const user = await User.findById(id);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      if (req.user.role !== 'teacherAssistant') {
+        return res.status(403).json({ message: 'Only teacher assistants can remove points' });
+      }
+      
+      if (user.punctuation > 0) {
+        user.punctuation -= 1;
+        await user.save();
+      }
+      
+      res.json({ message: 'Points removed successfully', user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error removing points' });
+    }
+  },
+
   async searchUserByName(req, res) {
     const { name } = req.query;
   
@@ -188,9 +241,12 @@ const UserController = {
     }
   },
   
-  async getCurrentUserWithDoubts(req, res) {
+  /*TEST FAIL
+  async getUsersWithDoubts(req, res) {
     try {
+
       const user = req.user;
+
       const doubts = await Doubt.find({ userId: user._id });
   
       res.json({ user, doubts });
@@ -198,8 +254,24 @@ const UserController = {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving user information and doubts' });
     }
-  }
+  },
+  */
+
+  /*TEST FAIL
+  async getRanking(req, res) {
+    try {
+      const users = await User.find()
+        .sort({ punctuation: -1 })
+        .select('name punctuation');
   
+      res.json({ users });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error retrieving users' });
+    }
+  }
+  */
+
 };
 
 module.exports = UserController;

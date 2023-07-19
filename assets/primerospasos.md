@@ -40,3 +40,7 @@ Fusión final en la rama 'main':
 3. Fusiona la rama 'develop' en la rama 'main' utilizando el comando 'git merge develop'.
 4. Si hay conflictos, resuélvelos manualmente en tu editor de código.
 5. Realiza un push de la rama 'main' a tu repositorio remoto utilizando el comando 'git push origin main'.
+
+package.json -> to import seeders
+"doubts:import": "node config/seeders",
+"users:import": "node config/seeders"
