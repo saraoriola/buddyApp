@@ -7,10 +7,13 @@ const { authentication, isAuthor } = require('../middleware/authentication');
 router.post('/createDoubt', authentication, DoubtController.createDoubt);
 router.put('/createAnswer/:_id', authentication, DoubtController.createAnswer);
 
-router.get('/', DoubtController.appp);
 router.get(
   '/getAllDoubtsUsersAnswers',
   DoubtController.getAllDoubtsUsersAnswers
+);
+router.get(
+  '/getAllDoubtsUsersAnswersUser',
+  DoubtController.getAllDoubtsUsersAnswersUser
 );
 
 //router.get('/getAnswerByAnswer/answer/:answer', DoubtController.getAnswerByAnswer); EXTRA WIP

@@ -15,25 +15,16 @@ const DoubtController = {
     }
   },
   //TODO: endpoint does not work and maybe function too.Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
-  async appp(req, res) {
+  async getAllDoubtsUsersAnswers(req, res) {
     try {
-<<<<<<< HEAD
       const all = {};
       const allDoubtsUsersAnswers = await Doubts.find()
-        .populate('user')
-        .populate('answers.user');
-      res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
-=======
-      const allDoubtUserAndAnswers = await Doubts.find();
-      // .populate('user')
-      // .populate('answers.answer');
-      // console.log(allDoubtUserAndAnswers);
-      // console.log('hey');
+        .populate('user', 'name')
+        .populate('answers', 'name');
       res.send({
         message: 'Successful doubts & user and answer are shown',
-        allDoubtUserAndAnswers,
+        allDoubtsUsersAnswers,
       });
->>>>>>> 6a18d42 (WIP getDoubtsUserAndAnswers)
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -42,8 +33,8 @@ const DoubtController = {
       });
     }
   },
-  // TODO: WIP show some fields. Vídeo 55:50h Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
-  async getAllDoubtsUsersAnswers(req, res) {
+  // show some fields. Vídeo 55:50h Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
+  async getAllDoubtsUsersAnswersUser(req, res) {
     try {
       const all = {};
       const allDoubtsUsersAnswers = await Doubts.find()
@@ -120,12 +111,9 @@ const DoubtController = {
   // Endpoint para crear una respuesta en una determinada duda
   async createAnswer(req, res) {
     try {
-<<<<<<< HEAD
-=======
       if (!req.body.answer) {
         return res.status(400).send('Please, fill in your answer');
       }
->>>>>>> 6a18d42 (WIP getDoubtsUserAndAnswers)
       const answer = await Doubts.findByIdAndUpdate(
         req.params._id,
         {

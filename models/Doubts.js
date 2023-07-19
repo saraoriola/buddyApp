@@ -17,10 +17,6 @@ const DoubtSchema = new Schema(
   },
   { timestamps: true }
 );
-<<<<<<< HEAD
-//TODO: no se crea pero muestra el mensaje de creado
-=======
->>>>>>> 6a18d42 (WIP getDoubtsUserAndAnswers)
 
 const Doubt = model('Doubt', DoubtSchema);
 
