@@ -12,6 +12,10 @@ router.get(
   DoubtController.getAllDoubtsUsersAnswers
 );
 //router.get('/getAnswerByAnswer/answer/:answer', DoubtController.getAnswerByAnswer); EXTRA WIP
+router.get(
+  '/getAllDoubtsUsersAnswersUser',
+  DoubtController.getAllDoubtsUsersAnswersUser
+);
 
 router.get('/getDoubtByDoubt/doubt/:doubt', DoubtController.getDoubtByDoubt);
 router.get('/getDoubtById/id/:_id', DoubtController.getDoubtById);

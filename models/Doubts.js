@@ -19,7 +19,6 @@ const DoubtSchema = new Schema(
   },
   { timestamps: true }
 );
-//TODO: no se crea pero muestra el mensaje de creado
 
 const Doubt = model('Doubt', DoubtSchema);
 

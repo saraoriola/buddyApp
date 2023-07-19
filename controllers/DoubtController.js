@@ -2,7 +2,7 @@ const Doubts = require('../models/Doubts.js');
 
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
-  async createDoubt(req, res) {
+  async createDoubt(req, res, next) {
     try {
       const doubt = await Doubts.create({
         ...req.body,
@@ -11,9 +11,7 @@ const DoubtController = {
       res.status(201).send({ message: 'Successful doubt created', doubt });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem creating your question' });
+      next(error);
     }
   },
   // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
@@ -24,8 +22,8 @@ const DoubtController = {
       const allDoubtsUsersAnswers = await Doubts.find()
         .limit(limit)
         .skip((page - 1) * limit)
-        .populate('user')
-        .populate('answers.user');
+        .populate('user', 'name')
+        .populate('answers.user', 'name');
       res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
     } catch (error) {
       console.log(error);
@@ -51,6 +49,25 @@ const DoubtController = {
         .send({ message: 'Sorry, there was a problem finding the doubt' });
     }
   },
+  // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
+  async getAllDoubtsUsersAnswersUser(req, res) {
+    try {
+      const all = {};
+      const { page = 1, limit = 10 } = req.query;
+      const allDoubtsUsersAnswers = await Doubts.find()
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .populate('user', 'name')
+        .populate('answers.user', 'name');
+      res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message:
+          'Sorry, there was a problem to show all doubts, the users or their answers',
+      });
+    }
+  },
   //Endpoint para buscar duda por id
   async getDoubtById(req, res) {
     try {
@@ -74,7 +91,7 @@ const DoubtController = {
       console.error(error);
       res
         .status(500)
-        .send({ message: `Sorry, the doubt cannot be updated after 30'` }); //
+        .send({ message: `Sorry, the doubt cannot update your question` }); //
     }
   },
   //Endpoint para eliminar una duda(tiene que estar autenticado)
@@ -92,6 +109,9 @@ const DoubtController = {
   // Endpoint para crear una respuesta en una determinada duda
   async createAnswer(req, res) {
     try {
+      if (!req.body.answer) {
+        return res.status(400).send('Please, fill in your answer');
+      }
       const answer = await Doubts.findByIdAndUpdate(
         req.params._id,
         {
