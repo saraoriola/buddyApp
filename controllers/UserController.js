@@ -67,17 +67,6 @@ const UserController = {
         role: 'student',
       });
 
-      const token = jwt.sign({ _id: User._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
-
-      await transporter.sendMail({
-        to: email,
-        subject: 'Confirm Your Registration',
-        html: `<h3>Welcome, you're one step away from registering</h3>
-        <a href="${url}">Click to confirm your registration</a>`,
-      });
-
       res
         .status(201)
         .json({ message: 'User registered successfully', user, token });
@@ -85,6 +74,46 @@ const UserController = {
       console.error(error);
       res.status(500).json({ message: 'Error registering user' });
       next(error);
+    }
+  },
+
+  async recoverPassword(req, res) {
+    try {
+      const recoverToken = jwt.sign(
+        { email: req.params.email },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '48h',
+        }
+      );
+      const url = 'http://localhost:3000/users/resetPassword/' + recoverToken;
+      await transporter.sendMail({
+        to: req.params.email,
+        subject: 'Recover Password',
+        html: `<h3>Recover Password</h3>
+          <a href="${url}">Recover Password</a>
+          The link will expire in 48 hours
+        `,
+      });
+      res.send({
+        message: 'A recovery email has been sent to your email address',
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  async resetPassword(req, res) {
+    try {
+      const recoverToken = req.params.recoverToken;
+      const payload = jwt.verify(recoverToken, process.env.JWT_SECRET);
+      await User.findOneAndUpdate(
+        { email: payload.email },
+        { password: req.body.password }
+      );
+      res.send({ message: 'Password changed successfully' });
+    } catch (error) {
+      console.error(error);
     }
   },
 
@@ -126,12 +155,7 @@ const UserController = {
 
   async getCurrentUser(req, res) {
     try {
-      const user = await User.findById(req.user._id)
-        .populate({
-          path: 'doubtIds',
-        })
-        .populate('doubtList');
-
+      const user = req.user;
       res.json({ user });
     } catch (error) {
       console.error(error);
@@ -178,11 +202,11 @@ const UserController = {
     }
   },
 
-  removePoints: async (req, res) => {
-    const { userId } = req.params;
+  async removePoints(req, res) {
+    const { id } = req.params;
 
     try {
-      const user = await User.findById(userId);
+      const user = await User.findById(id);
 
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -236,9 +260,12 @@ const UserController = {
     }
   },
 
-  async getCurrentUserWithDoubts(req, res) {
+  /*TEST FAIL
+  async getUsersWithDoubts(req, res) {
     try {
+
       const user = req.user;
+
       const doubts = await Doubt.find({ userId: user._id });
 
       res.json({ user, doubts });
@@ -249,18 +276,22 @@ const UserController = {
         .json({ message: 'Error retrieving user information and doubts' });
     }
   },
+  */
 
+  /*TEST FAIL
   async getRanking(req, res) {
     try {
       const users = await User.find()
         .sort({ punctuation: -1 })
-        .select('name _id punctuation');
+        .select('name punctuation');
+  
       res.json({ users });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving users' });
     }
-  },
+  }
+  */
 };
 
 module.exports = UserController;

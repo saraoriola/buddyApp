@@ -38,6 +38,7 @@ UserSchema.statics.findById = async function (id) {
   return user;
 };
 
+
 UserSchema.methods.toJSON = function () {
   const user = this._doc;
   delete user.tokens;
