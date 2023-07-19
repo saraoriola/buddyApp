@@ -11,7 +11,14 @@ const VoteController = {
         return res.status(404).json({ message: 'Answer not found' });
       }
 
+      const userId = req.user._id;
+
+      if (answer.votedBy.includes(userId)) {
+        return res.status(400).json({ message: 'User has already voted for this answer' });
+      }
+
       answer.votes += 1;
+      answer.votedBy.push(userId);
       await answer.save();
 
       res.json({ message: 'Vote added successfully', answer });
@@ -31,8 +38,11 @@ const VoteController = {
         return res.status(404).json({ message: 'Answer not found' });
       }
 
-      if (answer.votes > 0) {
+      const userId = req.user._id; 
+
+      if (answer.votedBy.includes(userId)) {
         answer.votes -= 1;
+        answer.votedBy.pull(userId);
         await answer.save();
       }
 

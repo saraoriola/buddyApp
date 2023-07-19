@@ -15,7 +15,7 @@ router.get('/ranking', UserController.getRanking);
   
 
 router.put('/:_id/givePoints', authentication, isAdmin, UserController.givePoints);
-router.put('/:_id/points/remove', authentication, isAdmin, UserController.removePoints);
+router.put('/:_id/points/removePoints', authentication, isAdmin, UserController.removePoints);
 
 
 router.delete('/logout', authentication, UserController.logoutUser);
