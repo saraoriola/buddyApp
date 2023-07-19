@@ -1,20 +1,18 @@
-// Import the "express" module
-const express = require("express");
-// Import the 'dbConnection' function from the './config/config' file
-const { dbConnection } = require("./config/config");
-
-// Create an instance of the Express application
+const express = require('express');
+const { dbConnection } = require('./config/config');
+const { handleTypeError } = require('./middleware/error');
 const app = express();
+require('dotenv').config()
 
-// Define the port number on which the server will run
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 
-// Establish the connection with the database
 dbConnection();
 
-// Middleware to parse JSON in the request body
 app.use(express.json());
 
+app.use('/users', require('./routes/users'));
+app.use('/doubts', require('./routes/doubts'));
 
-// Start the server on the specified port
+app.use(handleTypeError);
+
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
