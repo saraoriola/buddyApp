@@ -28,8 +28,7 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
     tokens: [],
-    //doubtIds: [{ type: ObjectId, ref: "Doubt" }],
-    //wishList: [{ type: ObjectId, ref: 'Answer' }],
+    doubtList: [{ type: ObjectId, ref: 'Doubt' }], // doubtList
   },
   { timestamps: true }
 );

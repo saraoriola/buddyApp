@@ -113,7 +113,12 @@ const UserController = {
   
   async getCurrentUser(req, res) {
     try {
-      const user = req.user;
+      const user = await User.findById(req.user._id)
+        .populate({
+          path: "doubtIds",
+        })
+        .populate("doubtList");
+  
       res.json({ user });
     } catch (error) {
       console.error(error);
