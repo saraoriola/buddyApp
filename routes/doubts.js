@@ -19,13 +19,8 @@ router.post('/createAnswer/:_id', authentication, DoubtController.createAnswer);
 
 // router.get('/getDoubtByDoubt/doubt/:doubt', DoubtController.getDoubtByDoubt);
 // router.get('/getDoubtById/id/:_id', DoubtController.getDoubtById);
-// //actualizar una duda ( tiene que estar autenticado)
 
-// router.put('/updateDoubt/id/:_id',authentication,isAuthor,DoubtController.updateDoubt);
-
-// router.delete('/deleteDoubt/id/:_id',authentication,DoubtController.deleteDoubt);
-// router.put('/updateDoubt/id/:_id',authentication,isAuthor,DoubtController.updateDoubt);
-
-// router.delete('/deleteDoubt/id/:_id',authentication,DoubtController.deleteDoub);
+router.put('/updateDoubt/id/:_id', authentication, isAuthor, DoubtController.updateDoubt); // TEST OK WITHOUT AUTH
+router.delete('/deleteDoubt/id/:_id', authentication, isAuthor, DoubtController.deleteDoubt); // TEST OK WITHOUT AUTH
 
 module.exports = router;
