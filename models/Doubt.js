@@ -15,7 +15,6 @@ const DoubtSchema = new Schema(
         votes: Number,
       },
     ],
-    likes: [{ type: ObjectId }], // doubtList
   },
   { timestamps: true }
 );

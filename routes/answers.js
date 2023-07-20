@@ -1,9 +1,0 @@
-const express = require('express');
-const router = express.Router();
-const VoteController = require('../controllers/AnswerController');
-
-router.put('/:answerId/votes', VoteController.giveVote);
-
-router.put('/:answerId/votes/remove', VoteController.removeVote);
-
-module.exports = router;

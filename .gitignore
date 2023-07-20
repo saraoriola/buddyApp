@@ -1,6 +1,3 @@
 node_modules
-keys.js
 .DS_Store
 .env
-data
-seeders.js

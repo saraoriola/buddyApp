@@ -260,10 +260,8 @@ const UserController = {
     }
   },
 
-  /*TEST FAIL
   async getUsersWithDoubts(req, res) {
     try {
-
       const user = req.user;
 
       const doubts = await Doubt.find({ userId: user._id });
@@ -276,22 +274,18 @@ const UserController = {
         .json({ message: 'Error retrieving user information and doubts' });
     }
   },
-  */
 
-  /*TEST FAIL
   async getRanking(req, res) {
     try {
       const users = await User.find()
         .sort({ punctuation: -1 })
         .select('name punctuation');
-  
       res.json({ users });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving users' });
     }
-  }
-  */
+  },
 };
 
 module.exports = UserController;

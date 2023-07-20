@@ -28,7 +28,6 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
     tokens: [],
-    doubtList: [{ type: ObjectId, ref: 'Doubt' }], // doubtList
   },
   { timestamps: true }
 );

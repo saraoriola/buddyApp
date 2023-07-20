@@ -1,21 +1,33 @@
 const Doubt = require('../models/Doubt.js');
-console.log('hello');
+require('dotenv').config();
+
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
   async createDoubt(req, res, next) {
     try {
-      const doubt = await Doubt.create({
+      const { doubt } = req.body;
+
+      const existingDoubt = await Doubt.findOne({ doubt });
+      if (existingDoubt) {
+        return res.status(409).json({ message: 'This doubt already exists' });
+      }
+
+      const createdDoubt = await Doubt.create({
         ...req.body,
         user: req.user._id,
       });
-      res.status(201).send({ message: 'Successful doubt created', doubt });
+
+      res
+        .status(201)
+        .send({ message: 'Successful doubt created', doubt: createdDoubt });
     } catch (error) {
       console.error(error);
       next(error);
     }
   },
+
   // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
-  async getAllDoubtsUsersAnswers(req, res) {
+  async getAllDoubtsUsersAnswers(req, res, next) {
     try {
       const all = {};
       const { page = 1, limit = 10 } = req.query;
@@ -27,14 +39,12 @@ const DoubtController = {
       res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
     } catch (error) {
       console.log(error);
-      res.status(500).send({
-        message:
-          'Sorry, there was a problem to show all doubts, the users or their answers',
-      });
+      next(error);
     }
   },
+
   //Endpoint para buscar duda por nombre
-  async getDoubtByDoubt(req, res) {
+  async getDoubtByDoubt(req, res, next) {
     try {
       if (req.params.doubt.length > 20) {
         return res.status(400).send('Sorry, search too long');
@@ -43,14 +53,12 @@ const DoubtController = {
       const doubts = await Doubt.find({ doubt });
       res.send(doubts);
     } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem finding the doubt' });
+      console.log(error);
+      next(error);
     }
   },
   // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
-  async getAllDoubtsUsersAnswersUser(req, res) {
+  async getAllDoubtsUsersAnswersUser(req, res, next) {
     try {
       const all = {};
       const { page = 1, limit = 10 } = req.query;
@@ -62,52 +70,43 @@ const DoubtController = {
       res.send({ message: 'Successful answer shown', allDoubtsUsersAnswers });
     } catch (error) {
       console.log(error);
-      res.status(500).send({
-        message:
-          'Sorry, there was a problem to show all doubts, the users or their answers',
-      });
+      next(error);
     }
   },
   //Endpoint para buscar duda por id
-  async getDoubtById(req, res) {
+  async getDoubtById(req, res, next) {
     try {
       const doubt = await Doubt.findById(req.params._id).populate('user'); //aggregation operator, which lets you reference documents in other collections.
       res.send({ message: 'Successful doubt find', doubt });
     } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem finding the doubt' });
+      console.log(error);
+      next(error);
     }
   },
   //actualizar una duda (tiene que estar autenticado)
-  async updateDoubt(req, res) {
+  async updateDoubt(req, res, next) {
     try {
       const doubt = await Doubt.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
       res.send({ message: 'Successful doubt update' });
     } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: `Sorry, the doubt cannot update your question` }); //
+      console.log(error);
+      next(error);
     }
   },
   //Endpoint para eliminar una duda(tiene que estar autenticado)
-  async deleteDoubt(req, res) {
+  async deleteDoubt(req, res, next) {
     try {
       const doubt = await Doubt.findByIdAndDelete(req.params._id);
       res.send({ message: 'Successful doubt delete', doubt });
     } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem deleting your question' });
+      console.log(error);
+      next(error);
     }
   },
   // Endpoint para crear una respuesta en una determinada duda
-  async createAnswer(req, res) {
+  async createAnswer(req, res, next) {
     try {
       if (!req.body.answer) {
         return res.status(400).send('Please, fill in your answer');
@@ -126,13 +125,11 @@ const DoubtController = {
       res.status(201).send({ message: 'Successful answer created', answer });
     } catch (error) {
       console.log(error);
-      res.status(500).send({
-        message: 'Sorry, there was a problem creating the answers',
-      });
+      next(error);
     }
   },
   //Read respuesta
-  async getAnswerByAnswer(req, res) {
+  async getAnswerByAnswer(req, res, next) {
     try {
       if (req.params.answer.length > 20) {
         return res.status(400).send('Sorry, search too long');
@@ -143,39 +140,10 @@ const DoubtController = {
       console.log(answers);
       res.send(answers);
     } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem finding the answer' });
-    }
-  },
-
-  //Update respuesta
-
-  //Delete respuesta
-
-  //Dar un voto a una respuesta
-
-  //Quitar un voto a una respuesta
-
-  //doubtList (add like)
-  async like(req, res) {
-    try {
-      const doubt = await Doubt.findByIdAndUpdate(
-        req.params._id,
-        { $push: { likes: req.user._id } },
-        { new: true }
-      );
-      await User.findByIdAndUpdate(
-        req.user._id,
-        { $push: { wishList: req.params._id } },
-        { new: true }
-      );
-      res.send(doubt);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'There was a problem with your like' });
+      console.log(error);
+      next(error);
     }
   },
 };
+
 module.exports = DoubtController;
