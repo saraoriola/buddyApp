@@ -1,10 +1,10 @@
-const Doubts = require('../models/Doubts.js');
-
+const Doubt = require('../models/Doubt.js');
+console.log('hello');
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
   async createDoubt(req, res, next) {
     try {
-      const doubt = await Doubts.create({
+      const doubt = await Doubt.create({
         ...req.body,
         user: req.user._id,
       });
@@ -19,7 +19,7 @@ const DoubtController = {
     try {
       const all = {};
       const { page = 1, limit = 10 } = req.query;
-      const allDoubtsUsersAnswers = await Doubts.find()
+      const allDoubtsUsersAnswers = await Doubt.find()
         .limit(limit)
         .skip((page - 1) * limit)
         .populate('user', 'name')
@@ -40,7 +40,7 @@ const DoubtController = {
         return res.status(400).send('Sorry, search too long');
       }
       const doubt = new RegExp(req.params.doubt, 'i');
-      const doubts = await Doubts.find({ doubt });
+      const doubts = await Doubt.find({ doubt });
       res.send(doubts);
     } catch (error) {
       console.error(error);
@@ -54,7 +54,7 @@ const DoubtController = {
     try {
       const all = {};
       const { page = 1, limit = 10 } = req.query;
-      const allDoubtsUsersAnswers = await Doubts.find()
+      const allDoubtsUsersAnswers = await Doubt.find()
         .limit(limit)
         .skip((page - 1) * limit)
         .populate('user', 'name')
@@ -71,7 +71,7 @@ const DoubtController = {
   //Endpoint para buscar duda por id
   async getDoubtById(req, res) {
     try {
-      const doubt = await Doubts.findById(req.params._id).populate('user'); //aggregation operator, which lets you reference documents in other collections.
+      const doubt = await Doubt.findById(req.params._id).populate('user'); //aggregation operator, which lets you reference documents in other collections.
       res.send({ message: 'Successful doubt find', doubt });
     } catch (error) {
       console.error(error);
@@ -83,7 +83,7 @@ const DoubtController = {
   //actualizar una duda (tiene que estar autenticado)
   async updateDoubt(req, res) {
     try {
-      const doubt = await Doubts.findByIdAndUpdate(req.params._id, req.body, {
+      const doubt = await Doubt.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
       res.send({ message: 'Successful doubt update' });
@@ -97,7 +97,7 @@ const DoubtController = {
   //Endpoint para eliminar una duda(tiene que estar autenticado)
   async deleteDoubt(req, res) {
     try {
-      const doubt = await Doubts.findByIdAndDelete(req.params._id);
+      const doubt = await Doubt.findByIdAndDelete(req.params._id);
       res.send({ message: 'Successful doubt delete', doubt });
     } catch (error) {
       console.error(error);
@@ -112,7 +112,7 @@ const DoubtController = {
       if (!req.body.answer) {
         return res.status(400).send('Please, fill in your answer');
       }
-      const answer = await Doubts.findByIdAndUpdate(
+      const answer = await Doubt.findByIdAndUpdate(
         req.params._id,
         {
           $push: {
@@ -121,7 +121,8 @@ const DoubtController = {
         },
         { new: true }
       );
-      await Doubts.findById(req.body.doubt).populate('user', 'answers.user');
+      console.log(answer);
+      await Doubt.findById(req.body.doubt).populate('user', 'answers.user');
       res.status(201).send({ message: 'Successful answer created', answer });
     } catch (error) {
       console.log(error);
@@ -129,7 +130,24 @@ const DoubtController = {
         message: 'Sorry, there was a problem creating the answers',
       });
     }
-  }
-
+  },
+  //Read respuesta
+  async getAnswerByAnswer(req, res) {
+    try {
+      if (req.params.answer.length > 20) {
+        return res.status(400).send('Sorry, search too long');
+      }
+      const answer = new RegExp(req.params.answer, 'i');
+      console.log(answer);
+      const answers = await Doubt.find({ answer }); //?????????????????? DUUUDA buscar dentro del array que está en un obj   da []
+      console.log(answers);
+      res.send(answers);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: 'Sorry, there was a problem finding the answer' });
+    }
+  },
 };
 module.exports = DoubtController;
