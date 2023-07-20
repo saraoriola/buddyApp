@@ -129,25 +129,7 @@ const DoubtController = {
         message: 'Sorry, there was a problem creating the answers',
       });
     }
-  },
-  //Read respuesta
-  async getAnswerByAnswer(req, res) {
-    try {
-      if (req.params.answer.length > 20) {
-        return res.status(400).send('Sorry, search too long');
-      }
-      const answer = new RegExp(req.params.answer, 'i');
-      console.log(answer);
-      const answers = await Doubts.find({ answer }); //?????????????????? DUUUDA buscar dentro del array que está en un obj   da []
-      console.log(answers);
-      res.send(answers);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: 'Sorry, there was a problem finding the answer' });
-    }
-  },
+  }
 
 };
 module.exports = DoubtController;

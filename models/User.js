@@ -28,7 +28,6 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
     tokens: [],
-    doubtList: [{ type: ObjectId, ref: 'Doubt' }], // doubtList
   },
   { timestamps: true }
 );
@@ -37,7 +36,6 @@ UserSchema.statics.findById = async function (id) {
   const user = await this.findOne({ _id: id });
   return user;
 };
-
 
 UserSchema.methods.toJSON = function () {
   const user = this._doc;
