@@ -1,19 +1,29 @@
 const Doubt = require('../models/Doubt.js');
-console.log('hello');
+require('dotenv').config();
+
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)
   async createDoubt(req, res, next) {
     try {
-      const doubt = await Doubt.create({
+      const { doubt } = req.body;
+  
+      const existingDoubt = await Doubt.findOne({ doubt });
+      if (existingDoubt) {
+        return res.status(409).json({ message: 'This doubt already exists' });
+      }
+  
+      const createdDoubt = await Doubt.create({
         ...req.body,
         user: req.user._id,
       });
-      res.status(201).send({ message: 'Successful doubt created', doubt });
+  
+      res.status(201).send({ message: 'Successful doubt created', doubt: createdDoubt });
     } catch (error) {
       console.error(error);
       next(error);
     }
   },
+  
   // Endpoint para traer todas las dudas junto a los usuarios que hicieron esas dudas y junto a las respuestas de la duda.
   async getAllDoubtsUsersAnswers(req, res) {
     try {
