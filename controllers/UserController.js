@@ -225,10 +225,10 @@ const UserController = {
   },
   
   async getUserById(req, res) {
-    const { id } = req.params;
+    const { _id } = req.params;
   
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(_id);
   
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -257,7 +257,7 @@ const UserController = {
   },
   */
 
-  /*TEST FAIL
+
   async getRanking(req, res) {
     try {
       const users = await User.find()
@@ -270,7 +270,6 @@ const UserController = {
       res.status(500).json({ message: 'Error retrieving users' });
     }
   }
-  */
 
 };
 

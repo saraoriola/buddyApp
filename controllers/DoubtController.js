@@ -149,32 +149,5 @@ const DoubtController = {
     }
   },
 
-  //Update respuesta
-
-  //Delete respuesta
-
-  //Dar un voto a una respuesta
-
-  //Quitar un voto a una respuesta
-
-  //doubtList (add like)
-  async like(req, res) {
-    try {
-      const doubt = await Doubt.findByIdAndUpdate(
-        req.params._id,
-        { $push: { likes: req.user._id } },
-        { new: true }
-      );
-      await User.findByIdAndUpdate(
-        req.user._id,
-        { $push: { wishList: req.params._id } },
-        { new: true }
-      );
-      res.send(doubt);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'There was a problem with your like' });
-    }
-  },
 };
 module.exports = DoubtController;
