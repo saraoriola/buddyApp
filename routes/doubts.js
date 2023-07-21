@@ -15,6 +15,7 @@ router.post('/createAnswer/:_id', authentication, DoubtController.createAnswer);
 
 router.get(
   '/getAllDoubtsUsersAnswersUser',
+  authentication,
   DoubtController.getAllDoubtsUsersAnswersUser
 );
 
@@ -31,7 +32,7 @@ router.get(
 
 router.put(
   '/markAsResolved/id/:id',
-  authentication,
+  authentication, isAuthor,
   DoubtController.markAsResolved
 );
 router.put(
