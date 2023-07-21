@@ -41,6 +41,11 @@ const isAuthor = async (req, res, next) => {
     ) {
       return res.status(403).send({ message: 'You are not the author' });
     }
+    if (
+      doubt.user.toString() !== req.user._id.toString()
+    ) {
+      return res.status(403).send({ message: 'You are not the author' });
+    }
     next();
   } catch (error) {
     console.error(error);

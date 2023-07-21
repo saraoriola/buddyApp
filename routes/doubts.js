@@ -42,7 +42,7 @@ router.put(
 );
 
 router.put(
-  '/updateDoubt/id/:_id',
+  '/updateDoubt/id/:id',
   authentication,
   isAuthor,
   DoubtController.updateDoubt
