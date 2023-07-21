@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-require('dotenv').config()
+require('dotenv').config();
 
 const authentication = async (req, res, next) => {
   try {
@@ -16,7 +16,9 @@ const authentication = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ error, message: 'There was a problem with the token' });
+    return res
+      .status(500)
+      .send({ error, message: 'There was a problem with the token' });
   }
 };
 
