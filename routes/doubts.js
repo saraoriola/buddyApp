@@ -5,10 +5,10 @@ const { authentication, isAuthor } = require('../middleware/authentication');
 
 // //crear una duda( tiene que estar autenticado)
 
-router.get('/getAllDoubtsUsersAnswers', authentication, DoubtController.getAllDoubtsUsersAnswers); // TEST OK
+router.get('/getAllDoubtsUsersAnswers', authentication, DoubtController.getAllDoubtsUsersAnswers); 
 
-router.post('/createDoubt', authentication, DoubtController.createDoubt); //TEST OK
-router.post('/createAnswer/:_id', authentication, DoubtController.createAnswer); // TEST OK
+router.post('/createDoubt', authentication, DoubtController.createDoubt);
+router.post('/createAnswer/:_id', authentication, DoubtController.createAnswer); 
 
 
 //router.get('/getAnswerByAnswer/answer/:answer', DoubtController.getAnswerByAnswer); EXTRA WIP
@@ -20,7 +20,7 @@ router.post('/createAnswer/:_id', authentication, DoubtController.createAnswer);
 // router.get('/getDoubtByDoubt/doubt/:doubt', DoubtController.getDoubtByDoubt);
 // router.get('/getDoubtById/id/:_id', DoubtController.getDoubtById);
 
-router.put('/updateDoubt/id/:_id', authentication, isAuthor, DoubtController.updateDoubt); // TEST OK WITHOUT AUTH
-router.delete('/deleteDoubt/id/:_id', authentication, isAuthor, DoubtController.deleteDoubt); // TEST OK WITHOUT AUTH
+router.put('/updateDoubt/id/:_id', authentication, isAuthor, DoubtController.updateDoubt); 
+router.delete('/deleteDoubt/id/:_id', authentication, isAuthor, DoubtController.deleteDoubt);
 
 module.exports = router;

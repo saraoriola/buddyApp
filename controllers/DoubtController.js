@@ -1,7 +1,4 @@
 const Doubt = require('../models/Doubt.js');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const DoubtController = {
   // crear una duda (tiene que estar autenticado)

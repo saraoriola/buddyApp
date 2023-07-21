@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Doubt = require("../models/Doubt")
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
@@ -32,11 +33,9 @@ const isAdmin = async (req, res, next) => {
 
 const isAuthor = async (req, res, next) => {
   try {
-    const answer = await Answer.findById(req.params._id);
-    const doubt = await Doubt.findById(answer.doubtId);
+    const doubt = await Doubt.findById(req.params._id);
     if (
-      answer.userId.toString() !== req.user._id.toString() ||
-      doubt.userId.toString() !== req.user._id.toString()
+      doubt.user.toString() !== req.user._id.toString()
     ) {
       return res.status(403).send({ message: 'You are not the author' });
     }
