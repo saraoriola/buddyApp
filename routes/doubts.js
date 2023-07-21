@@ -25,24 +25,25 @@ router.get(
   DoubtController.getDoubtByDoubt
 );
 router.get(
-  '/getDoubtById/id/:id',
+  '/getDoubtById/id/:_id',
   authentication,
   DoubtController.getDoubtById
 );
 
 router.put(
-  '/markAsResolved/id/:id',
-  authentication, isAuthor,
+  '/markAsResolved/id/:_id',
+  authentication,
+  isAuthor,
   DoubtController.markAsResolved
 );
 router.put(
-  '/markAsUnresolved/id/:id',
+  '/markAsUnresolved/id/:_id',
   authentication,
   DoubtController.markAsUnresolved
 );
 
 router.put(
-  '/updateDoubt/id/:id',
+  '/updateDoubt/id/:_id',
   authentication,
   isAuthor,
   DoubtController.updateDoubt

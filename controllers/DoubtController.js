@@ -71,7 +71,7 @@ const DoubtController = {
   },
   async getDoubtById(req, res, next) {
     try {
-      const doubt = await Doubt.findById(req.params.id);
+      const doubt = await Doubt.findById(req.params._id);
       console.log(doubt);
       res.send({ message: 'Successful doubt find', doubt });
     } catch (error) {
@@ -92,8 +92,8 @@ const DoubtController = {
   },
   async deleteDoubt(req, res, next) {
     try {
-      const doubt = await Doubt.findByIdAndDelete(req.params._id);
-      res.send({ message: 'Successful doubt delete', doubt });
+      await Doubt.findByIdAndDelete(req.params._id);
+      res.send({ message: 'Successful doubt delete' });
     } catch (error) {
       console.log(error);
       next(error);
@@ -108,7 +108,7 @@ const DoubtController = {
         req.params._id,
         {
           $push: {
-            answers: { answer: req.body.answer, userId: req.user._id },
+            answers: { answer: req.body.answer, user: req.user._id },
           },
         },
         { new: true }
@@ -124,7 +124,7 @@ const DoubtController = {
   async markAsResolved(req, res, next) {
     try {
       const resolved = await Doubt.findByIdAndUpdate(
-        req.params.id,
+        req.params._id,
         { resolved: true },
         { new: true }
       );
@@ -137,7 +137,7 @@ const DoubtController = {
   async markAsUnresolved(req, res, next) {
     try {
       const unresolved = await Doubt.findByIdAndUpdate(
-        req.params.id,
+        req.params._id,
         { resolved: false },
         { new: true }
       );

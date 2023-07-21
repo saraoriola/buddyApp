@@ -10,24 +10,24 @@ router.get('/confirm/:emailToken', UserController.confirm);
 router.get('/recoverPassowrd/:email', UserController.recoverPassword);
 router.get('/', authentication, UserController.getCurrentUser);
 router.get('/search', authentication, UserController.searchUserByName);
-router.get('/id/:id', authentication, UserController.getUserById);
+router.get('/id/:_id', authentication, UserController.getUserById);
 router.get('/withDoubts', authentication, UserController.getUsersWithDoubts);
 router.get('/ranking', UserController.getRanking);
 
 router.put('/resetPassword/:recoverToken', UserController.resetPassword);
 router.put(
-  '/:id/givePoints',
+  '/:_id/givePoints',
   authentication,
   isAdmin,
   UserController.givePoints
 );
 router.put(
-  '/:id/removePoints',
+  '/:_id/removePoints',
   authentication,
   isAdmin,
   UserController.removePoints
 );
 
-router.delete('/logout', authentication, UserController.logoutUser); //TEST OK
+router.delete('/logout', authentication, UserController.logoutUser);
 
 module.exports = router;
