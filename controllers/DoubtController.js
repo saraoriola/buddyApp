@@ -1,5 +1,4 @@
 const Doubt = require('../models/Doubt.js');
-require('dotenv').config();
 
 const DoubtController = {
   async createDoubt(req, res, next) {
@@ -46,8 +45,10 @@ const DoubtController = {
         return res.status(400).send('Sorry, search too long');
       }
       const doubt = new RegExp(req.params.doubt, 'i');
+      console.log(req.params.doubt);
       const doubts = await Doubt.find({ doubt });
-      res.send(doubts);
+      console.log(doubts);
+      res.status(200).send({ message: 'Your search is ...', doubts });
     } catch (error) {
       console.log(error);
       next(error);
@@ -68,10 +69,10 @@ const DoubtController = {
       next(error);
     }
   },
-  ///DUUUDA ERROR "error": { "name": "JsonWebTokenError", "message": "jwt must be provided"},"message": "There was a problem with the token"
   async getDoubtById(req, res, next) {
     try {
-      const doubt = await Doubt.findById(req.params._id).populate('user'); //aggregation operator, which lets you reference documents in other collections.
+      const doubt = await Doubt.findById(req.params.id);
+      console.log(doubt);
       res.send({ message: 'Successful doubt find', doubt });
     } catch (error) {
       console.log(error);
@@ -83,7 +84,7 @@ const DoubtController = {
       const doubt = await Doubt.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
-      res.send({ message: 'Successful doubt update' });
+      res.send({ message: 'Successful doubt update', doubt });
     } catch (error) {
       console.log(error);
       next(error);
@@ -115,21 +116,6 @@ const DoubtController = {
       console.log(answer);
       await Doubt.findById(req.body.doubt).populate('user', 'answers.user');
       res.status(201).send({ message: 'Successful answer created', answer });
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
-  },
-  async getAnswerByAnswer(req, res, next) {
-    try {
-      if (req.params.answer.length > 20) {
-        return res.status(400).send('Sorry, search too long');
-      }
-      const answer = new RegExp(req.params.answer, 'i');
-      console.log(answer);
-      const answers = await Doubt.find({ answer });
-      console.log(answers);
-      res.send(answers);
     } catch (error) {
       console.log(error);
       next(error);
