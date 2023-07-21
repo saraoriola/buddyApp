@@ -35,14 +35,15 @@ const isAdmin = async (req, res, next) => {
 
 const isAuthor = async (req, res, next) => {
   try {
-    const doubt = await Doubt.findById(req.params._id);
+    const doubt = await Doubt.findById(req.params.id);
     if (
       doubt.user.toString() !== req.user._id.toString()
     ) {
       return res.status(403).send({ message: 'You are not the author' });
     }
+    const answer = await Doubt.findById(req.params.id);
     if (
-      doubt.user.toString() !== req.user._id.toString()
+      answer.user.toString() !== req.user.id.toString()
     ) {
       return res.status(403).send({ message: 'You are not the author' });
     }
