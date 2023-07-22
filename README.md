@@ -10,44 +10,45 @@
   ·
 </p>
 
-## Introducción
 
-¡Hola a todos! Somos dos alumnas entusiasmadas que hemos desarrollado esta increíble API REST para una genial App de Bonificación dirigida a alumnos. Estamos emocionadas de compartir con ustedes nuestro trabajo.
+# Introduction
 
-## Tecnologías Utilizadas 🚀
+Hello everyone! We are two enthusiastic students who have developed this amazing REST API for an awesome Student Bonus App. We are excited to share our work with all of you.
 
-Para hacer este proyecto posible, combinamos nuestra creatividad y habilidades con las siguientes tecnologías:
+## Technologies Used 🚀
 
-- **Node.js** 🟢: La base para nuestro backend rápido y eficiente.
-- **Express** 🌐: El framework que nos permitió construir una API robusta y flexible.
-- **MongoDB con Mongoose** 🍃: La base de datos NoSQL que utilizamos para almacenar todos nuestros datos.
-- **Bcrypt** 🔐: Para proteger las contraseñas de nuestros usuarios con seguridad.
-- **JSON Web Tokens (JWT)** 🔒: Una forma elegante de gestionar la autenticación en nuestra aplicación.
-- **Git y GitHub** 🗂️: Trabajamos en equipo usando el poder del control de versiones y la colaboración en línea.
-- **Vercel** 🚀: Plataforma de despliegue para tener nuestro backend disponible en producción.
+To make this project possible, we combined our creativity and skills with the following technologies:
 
-## Colección "Usuarios" 👤
+- **Node.js** 🟢: The foundation for our fast and efficient backend.
+- **Express** 🌐: The framework that allowed us to build a robust and flexible API.
+- **MongoDB with Mongoose** 🍃: The NoSQL database we used to store all our data.
+- **Bcrypt** 🔐: To securely store our users' passwords.
+- **JSON Web Tokens (JWT)** 🔒: An elegant way to handle authentication in our application.
+- **Git and GitHub** 🗂️: We worked as a team using the power of version control and online collaboration.
+- **Vercel** 🚀: Deployment platform to have our backend available in production.
 
-La colección "Usuarios" es donde guardamos toda la información relevante sobre nuestros queridos usuarios. Ya sean alumnos entusiastas o profesores apasionados, todos tienen su espacio aquí. Cada usuario tiene su propio ID único, y también almacenamos su Nombre, Apellido, Rol (alumno o profesor), Puntos acumulados y mucho más.
+## "Users" Collection 👤
 
-## Colección "Dudas" 🤔
+The "Users" collection is where we store all the relevant information about our beloved users. Whether they are enthusiastic students or passionate teachers, everyone has their space here. Each user has their unique ID, and we also store their Name, Last Name, Role (student or teacher), Accumulated Points, and much more.
 
-¿Alguna vez te has preguntado sobre algo que no has terminado comprender? ¡Los alumnos también! En la colección "Dudas" registramos todas las preguntas emocionantes que nuestros alumnos hacen. Cada duda está relacionada con el alumno que la generó, contiene la pregunta en sí, la fecha en que se hizo y si ya fue resuelta.
+## "Doubts" Collection 🤔
 
-## Descripción del Proyecto 💡
+Have you ever wondered about something you haven't quite understood? Students do too! In the "Doubts" collection, we register all the exciting questions that our students ask. Each doubt is related to the student who generated it, contains the question itself, the date it was asked, and whether it has already been resolved.
 
-Estamos entusiasmadas con el potencial de esta aplicación. Nuestro objetivo es desarrollar una API REST que sea una experiencia increíble para nuestros usuarios. Aquí están los desafíos que queremos superar:
+## Project Description 💡
 
-- Permitir el registro seguro de nuevos usuarios con contraseñas encriptadas con Bcrypt.
-- Realizar el login de usuarios utilizando tokens JWT para una autenticación segura y sin complicaciones.
-- Ofrecer operaciones CRUD para las colecciones "Usuarios" y "Dudas" para una gestión completa de la aplicación.
-- Asegurar que el backend esté disponible en producción para una experiencia fluida.
+We are excited about the potential of this application. Our goal is to develop a REST API that provides an incredible experience for our users. Here are the challenges we want to overcome:
 
-¡Esperamos que disfruten explorando nuestra API tanto como nosotros disfrutamos creándola!
+- Allow secure registration of new users with passwords encrypted with Bcrypt.
+- Perform user login using JWT tokens for secure and uncomplicated authentication.
+- Offer CRUD operations for the "Users" and "Doubts" collections for complete application management.
+- Ensure that the backend is available in production for a smooth user experience.
+
+We hope you enjoy exploring our API as much as we enjoyed creating it!
 
 ## Development 💻
 
-Clone the repository, install the dependencies and start the application
+Clone the repository, install the dependencies, and start the application:
 
 ```bash
 git clone git@github.com:saraoriola/buddyApp.git
@@ -60,26 +61,27 @@ Note: use the `depth` parameter to reduce the clone size and speed up the clone.
 ```sh
 git clone --depth=1 https://github.com/saraoriola/buddyApp.git
 ```
-## Cosas Pendientes y Trabajando en Ello 🚧
 
-Nuestro proyecto aún está en desarrollo y estamos trabajando arduamente para mejorar y agregar nuevas funcionalidades. Aquí está la lista de cosas pendientes y en las que estamos trabajando:
+## Pending Tasks and Work in Progress 🚧
 
-- Agregar la posibilidad de votar respuestas a dudas, para fomentar la interacción entre los usuarios.
-- Implementar una lista de las dudas favoritas, para que los usuarios puedan verlas desde su perfil.
-- Mejorar el sistema de notificaciones para mantener a los usuarios informados sobre las actualizaciones en las dudas y respuestas.
-- Optimizar el rendimiento y la eficiencia de la API para manejar cargas de usuarios más grandes.
+Our project is still under development, and we are working diligently to improve and add new functionalities. Here is the list of pending tasks and what we are currently working on:
 
-¡Estamos emocionadas por estas nuevas funcionalidades y mejoras! Continuaremos actualizando y mejorando el proyecto, así que mantente atento a las próximas actualizaciones.
+- **Implement the ability to vote on answers to questions to encourage interaction among users.**
+- **Implement a list of favorite questions, so users can view them from their profile.**
+- **Improve the notification system to keep users informed about updates on questions and answers.**
+- **Optimize the performance and efficiency of the API to handle larger user loads.**
 
+We are thrilled about these upcoming features and improvements! We will continue updating and enhancing the project, so stay tuned for the next updates.
 
-## Despliegue en Vercel 🚀
+## Deployment on Vercel 🚀
 
-¡Esta API está disponible para que la disfrutes en producción! La hemos desplegado con la ayuda de Vercel, lo que garantiza una experiencia de usuario fluida y confiable.
+This API is available for you to enjoy in production! We have deployed it with the help of Vercel, ensuring a smooth and reliable user experience.
 
-Visita nuestra API en Vercel: [Enlace a la API en Vercel](https://nombre-de-tu-api.vercel.app/)
+Visit our API on Vercel: [Link to the API on Vercel](https://your-api-name.vercel.app/)
 
-## Contribuciones y Feedback 🤝
+## Contributions and Feedback 🤝
 
-¡Nos encantaría recibir tus aportes y comentarios! Si tienes alguna idea genial o encuentras algo que se pueda mejorar, no dudes en abrir un issue o enviar un pull request. ¡Juntos haremos esta API aún más asombrosa!
+We would love to receive your contributions and feedback! If you have any brilliant ideas or find something that can be improved, please don't hesitate to open an issue or send a pull request. Together, we will make this API even more awesome!
 
-¡Gracias por tu interés y apoyo en nuestro proyecto! 🌟
+Thank you for your interest and support in our project! 🌟
+
