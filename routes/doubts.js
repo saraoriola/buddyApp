@@ -1,44 +1,58 @@
-// const express = require('express');
-// const router = express.Router();
-// const DoubtController = require('../controllers/DoubtController');
-// const { authentication, isAuthor } = require('../middleware/authentication');
+const express = require('express');
+const router = express.Router();
+230183;
+const DoubtController = require('../controllers/DoubtController');
+const { authentication, isAuthor } = require('../middleware/authentication');
 
-// //crear una duda( tiene que estar autenticado)
-// router.post('/createDoubt', authentication, DoubtController.createDoubt);
-// router.post('/createAnswer', authentication, DoubtController.createAnswer);
+router.get(
+  '/getAllDoubtsUsersAnswers',
+  authentication,
+  DoubtController.getAllDoubtsUsersAnswers
+);
 
-// router.get('/getAllDoubtsUsersAnswers', DoubtController.getAllDoubtsUsersAnswers);
-//router.get('/getAnswerByAnswer/answer/:answer', DoubtController.getAnswerByAnswer); EXTRA WIP
-// router.get('/getAllDoubtsUsersAnswersUser',DoubtController.getAllDoubtsUsersAnswersUser);
-// router.get(
-//   '/getAllDoubtsUsersAnswers',
-//   DoubtController.getAllDoubtsUsersAnswers
-// );
-// //router.get('/getAnswerByAnswer/answer/:answer', DoubtController.getAnswerByAnswer); EXTRA WIP
-// router.get(
-//   '/getAllDoubtsUsersAnswersUser',
-//   DoubtController.getAllDoubtsUsersAnswersUser
-// );
+router.post('/createDoubt', authentication, DoubtController.createDoubt);
+router.post('/createAnswer/:_id', authentication, DoubtController.createAnswer);
 
-// router.get('/getDoubtByDoubt/doubt/:doubt', DoubtController.getDoubtByDoubt);
-// router.get('/getDoubtById/id/:_id', DoubtController.getDoubtById);
-// //actualizar una duda ( tiene que estar autenticado)
+router.get(
+  '/getAllDoubtsUsersAnswersUser',
+  authentication,
+  DoubtController.getAllDoubtsUsersAnswersUser
+);
 
-// router.put('/updateDoubt/id/:_id',authentication,isAuthor,DoubtController.updateDoubt);
+router.get(
+  '/getDoubtByDoubt/doubt/:doubt',
+  authentication,
+  DoubtController.getDoubtByDoubt
+);
+router.get(
+  '/getDoubtById/id/:_id',
+  authentication,
+  DoubtController.getDoubtById
+);
 
-// router.delete('/deleteDoubt/id/:_id',authentication,DoubtController.deleteDoubt);
-// router.put(
-//   '/updateDoubt/id/:_id',
-//   authentication,
-//   isAuthor,
-//   DoubtController.updateDoubt
-// );
-// router.put('/likes/:_id', authentication, DoubtController.like);
+router.put(
+  '/markAsResolved/id/:_id',
+  authentication,
+  isAuthor,
+  DoubtController.markAsResolved
+);
+router.put(
+  '/markAsUnresolved/id/:_id',
+  authentication,
+  DoubtController.markAsUnresolved
+);
 
-// router.delete(
-//   '/deleteDoubt/id/:_id',
-//   authentication,
-//   DoubtController.deleteDoubt
-// );
+router.put(
+  '/updateDoubt/id/:_id',
+  authentication,
+  isAuthor,
+  DoubtController.updateDoubt
+);
+router.delete(
+  '/deleteDoubt/id/:_id',
+  authentication,
+  isAuthor,
+  DoubtController.deleteDoubt
+);
 
-// module.exports = router;
+module.exports = router;

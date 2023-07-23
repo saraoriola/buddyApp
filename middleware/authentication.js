@@ -1,6 +1,7 @@
 const User = require('../models/User');
+const Doubt = require('../models/Doubt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config()
+require('dotenv').config();
 
 const authentication = async (req, res, next) => {
   try {
@@ -16,7 +17,9 @@ const authentication = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ error, message: 'There was a problem with the token' });
+    return res
+      .status(500)
+      .send({ error, message: 'There was a problem with the token' });
   }
 };
 
@@ -32,12 +35,12 @@ const isAdmin = async (req, res, next) => {
 
 const isAuthor = async (req, res, next) => {
   try {
-    const answer = await Answer.findById(req.params._id);
-    const doubt = await Doubt.findById(answer.doubtId);
-    if (
-      answer.userId.toString() !== req.user._id.toString() ||
-      doubt.userId.toString() !== req.user._id.toString()
-    ) {
+    const doubt = await Doubt.findById(req.params._id);
+    if (doubt.user.toString() !== req.user._id.toString()) {
+      return res.status(403).send({ message: 'You are not the author' });
+    }
+    const answer = await Doubt.findById(req.params._id);
+    if (answer.user.toString() !== req.user._id.toString()) {
       return res.status(403).send({ message: 'You are not the author' });
     }
     next();

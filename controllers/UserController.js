@@ -178,10 +178,10 @@ const UserController = {
   },
 
   async givePoints(req, res) {
-    const { id } = req.params;
+    const { _id } = req.params;
 
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(_id);
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -203,10 +203,10 @@ const UserController = {
   },
 
   async removePoints(req, res) {
-    const { id } = req.params;
+    const { _id } = req.params;
 
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(_id);
 
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -244,10 +244,10 @@ const UserController = {
   },
 
   async getUserById(req, res) {
-    const { id } = req.params;
+    const { _id } = req.params;
 
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(_id);
 
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -263,6 +263,7 @@ const UserController = {
   async getUsersWithDoubts(req, res) {
     try {
       const user = req.user;
+
       const doubts = await Doubt.find({ userId: user._id });
 
       res.json({ user, doubts });
@@ -279,7 +280,6 @@ const UserController = {
       const users = await User.find()
         .sort({ punctuation: -1 })
         .select('name punctuation');
-
       res.json({ users });
     } catch (error) {
       console.error(error);

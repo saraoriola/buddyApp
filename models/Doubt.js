@@ -15,6 +15,7 @@ const DoubtSchema = new Schema(
         votes: Number,
       },
     ],
+    resolved: { type: Boolean },
   },
   { timestamps: true }
 );
