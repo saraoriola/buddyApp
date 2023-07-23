@@ -12,6 +12,13 @@ app.use(express.json());
 
 app.use('/users', require('./routes/users'));
 app.use('/doubts', require('./routes/doubts'));
+app.get('/', (req, res) =>
+  res
+    .status(200)
+    .send(
+      '<pre>Welcome to BuddyApp</pre><pre>Read the <a href="https://github.com/saraoriola/buddyApp#introduction">API docs</a>.</pre>'
+    )
+);
 
 app.use(handleTypeError);
 

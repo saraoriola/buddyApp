@@ -113,9 +113,10 @@ const DoubtController = {
         },
         { new: true }
       );
-      console.log(answer);
-      await Doubt.findById(req.body.doubt).populate('user', 'answers.user');
-      res.status(201).send({ message: 'Successful answer created', answer });
+      const result = await Doubt.findById(req.params._id)
+        .populate('user', 'name')
+        .populate('answers.user', 'name');
+      res.status(201).send({ message: 'Successful answer created', result });
     } catch (error) {
       console.log(error);
       next(error);
