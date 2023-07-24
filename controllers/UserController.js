@@ -69,10 +69,9 @@ const UserController = {
 
       res
         .status(201)
-        .json({ message: 'User registered successfully', user, token });
+        .json({ message: 'User registered successfully', user });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error registering user' });
       next(error);
     }
   },
