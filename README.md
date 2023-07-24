@@ -31,9 +31,14 @@ To make this project possible, we combined our creativity and skills with the fo
 
 The "Users" collection is where we store all the relevant information about our beloved users. Whether they are enthusiastic students or passionate teachers, everyone has their space here. Each user has their unique ID, and we also store their Name, Last Name, Role (student or teacher), Accumulated Points, and much more.
 
+ <a href='https://documenter.getpostman.com/view/28520865/2s946mapu7'>User's Documentation</a>
+
+
 ## "Doubts" Collection 🤔
 
 Have you ever wondered about something you haven't quite understood? Students do too! In the "Doubts" collection, we register all the exciting questions that our students ask. Each doubt is related to the student who generated it, contains the question itself, the date it was asked, and whether it has already been resolved.
+
+ <a href='https://documenter.getpostman.com/view/28520865/2s946mZpNy'>Doubs's Documentation</a>
 
 ## Project Description 💡
 
