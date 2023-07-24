@@ -82,7 +82,7 @@ We are thrilled about these upcoming features and improvements! We will continue
 
 This API is available for you to enjoy in production! We have deployed it with the help of Vercel, ensuring a smooth and reliable user experience.
 
-Visit our API on Vercel: [Link to the API on Vercel](https://your-api-name.vercel.app/)
+Visit our API on Vercel: [Link to the API on Vercel](https://buddy-app-eight.vercel.app)
 
 ## Contributions and Feedback 🤝
 
