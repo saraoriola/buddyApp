@@ -3,27 +3,27 @@ const Doubt = require('../models/Doubt.js');
 const DoubtController = {
   async createDoubt(req, res, next) {
     try {
-      req.body.resolved = false;
-      const { doubt } = req.body;
+        const { topic, question } = req.body;
 
-      const existingDoubt = await Doubt.findOne({ doubt });
-      if (existingDoubt) {
-        return res.status(409).json({ message: 'This doubt already exists' });
-      }
+        if (!topic || !question) {
+            return res.status(400).send({ message: "You need to fill out all fields" });
+        }
 
-      const createdDoubt = await Doubt.create({
-        ...req.body,
-        user: req.user._id,
-      });
+        const existingDoubt = await Doubt.findOne({ question });
+        if (existingDoubt) {
+            return res.status(409).json({ message: 'This query already exists' });
+        }
 
-      res
-        .status(201)
-        .send({ message: 'Successful doubt created', doubt: createdDoubt });
+        const query = await Doubt.create({ ...req.body, user: req.user._id });
+        await User.findByIdAndUpdate(req.user._id, { $push: { _idDoubt: query._id } });
+
+        res.status(201).send({ message: "Your query has been created", query });
     } catch (error) {
-      console.error(error);
-      next(error);
+        console.error(error);
+        next(error);
     }
-  },
+},
+
   async getAllDoubtsUsersAnswers(req, res, next) {
     try {
       const all = {};

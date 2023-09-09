@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors'); // Importa el módulo 'cors'
 const { dbConnection } = require('./config/config');
 const { handleTypeError } = require('./middleware/error');
 const app = express();
@@ -7,6 +8,9 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 
 dbConnection();
+
+// Agrega el middleware 'cors' para manejar las solicitudes CORS
+app.use(cors());
 
 app.use(express.json());
 
